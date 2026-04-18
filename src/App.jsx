@@ -15,59 +15,73 @@ const navItems = [
 const projects = [
   {
     id: "01",
-    title: "GeoQuest 3D",
-    role: "3D game · Unity",
-    outcome: "A geo-guesser style game with playable 3D scenes and real location data. Built in Unity from scratch.",
-    stack: ["Unity", "Game Development", "3D Interaction"],
+    title: "SynchroEdit",
+    role: "Google-Docs-style collaborative editor",
+    outcome:
+      "A shared editor where multiple people type in the same document at the same time. Edits, cursors, and selections stay synced live, so the document state remains consistent even under concurrent typing.",
+    stack: ["WebSockets", "Realtime Sync", "React", "Node.js"],
     tone: "cyan",
+    preview: "editor",
   },
   {
     id: "02",
-    title: "RugbyMate",
-    role: "Event-management program",
-    outcome: "Software I built to run a school rugby tournament — fixtures, scheduling, and coordination all in one place.",
-    stack: ["JavaScript", "Planning Tools", "School Event"],
-    tone: "amber",
+    title: "TryPOS Suite",
+    role: "Business POS with invoicing, contracts, and stock control",
+    outcome:
+      "A point-of-sale system built for real day-to-day operations: invoice generation, contract generation, checkout flow, and inventory management in one place. Sales update stock levels automatically and every transaction leaves a clean business record.",
+    stack: ["PHP", "SQL", "POS Workflows", "Inventory"],
+    tone: "green",
+    preview: "pos",
   },
   {
     id: "03",
-    title: "TryPOS",
-    role: "Point-of-sale system",
-    outcome: "A working POS system for school event stalls. PHP and SQL backend, kept simple enough to actually use on the day.",
-    stack: ["PHP", "SQL", "Business Logic"],
-    tone: "green",
+    title: "Codexa",
+    role: "Terminal-native ChatGPT experience for Codex CLI",
+    outcome:
+      "A developer product focused on CLI UX: a polished Codex interface for chatting with ChatGPT in the terminal. It is built around readable output hierarchy, cleaner interaction flow, and a modern terminal feel without breaking keyboard-first workflows.",
+    stack: ["TypeScript", "Terminal UI", "ANSI", "DX"],
+    tone: "amber",
+    preview: "terminal",
   },
   {
     id: "04",
-    title: "BinCalc",
-    role: "HP Prime calculator utility",
-    outcome: "A binary calculator for the HP Prime with a menu-driven interface. Built to make base conversion easier to practice and check.",
-    stack: ["HP Prime", "Algorithms", "Utility UI"],
-    tone: "cyan",
+    title: "EduTool",
+    role: "Interactive learning tools",
+    outcome:
+      "Interactive learning utilities for math and coding practice, built around immediate feedback loops. The focus is helping users understand mistakes while they work, not only showing final answers.",
+    stack: ["Python", "JavaScript", "Learning Tools"],
+    tone: "green",
+    preview: "edu",
   },
   {
     id: "05",
-    title: "FileFlow",
-    role: "Workflow utility tools",
-    outcome: "Python scripts for sorting files, building study aids, and cutting out repetitive tasks I kept doing by hand.",
-    stack: ["Python", "Automation", "Productivity"],
-    tone: "amber",
+    title: "GeoQuest 3D",
+    role: "Unity geolocation game system",
+    outcome:
+      "A location-guessing game with explorable 3D scenes, round scoring, and location reveal flow. I built the gameplay loop in Unity and tuned the HUD so each round feels competitive and clear.",
+    stack: ["Unity", "C#", "3D Interaction"],
+    tone: "cyan",
+    preview: "geoquest",
   },
   {
     id: "06",
-    title: "EduTool",
-    role: "Educational app experiments",
-    outcome: "Small interactive tools for practising math and code. The point was immediate feedback, not just showing the answer.",
-    stack: ["Python", "JavaScript", "Learning Tools"],
-    tone: "green",
+    title: "RugbyMate",
+    role: "Tournament operations tool",
+    outcome:
+      "Software I built to run a school rugby tournament across multiple teams. It handles fixtures, kickoff slots, and bracket updates so staff can coordinate the day from one dashboard.",
+    stack: ["JavaScript", "Scheduling", "Operations"],
+    tone: "amber",
+    preview: "rugby",
   },
   {
     id: "07",
     title: "GameOpt",
-    role: "Performance and setup optimisation",
-    outcome: "Configs, notes, and experiments around squeezing performance out of a setup — input latency, Linux tweaks, hardware tradeoffs.",
+    role: "Performance & setup tuning",
+    outcome:
+      "A practical performance lab for reducing input latency and improving frame stability. I used it to track Linux tuning experiments, hardware tradeoffs, and repeatable setup profiles.",
     stack: ["Linux", "Hardware", "Performance"],
     tone: "green",
+    preview: "perf",
   },
 ];
 
@@ -145,8 +159,8 @@ const featuredRepoNames = [
 const repoDisplayCopy = {
   SynchroEdit: {
     description:
-      "Real-time editing in the browser. I built it to understand how collaborative text tools actually work under the hood.",
-    tags: ["JavaScript", "Realtime UI", "Editor Tools"],
+      "A Google-Docs-style editor where two or more people type into the same file at the same time. Built to understand how real-time sync actually holds up under concurrent edits.",
+    tags: ["JavaScript", "Realtime Sync", "Collaborative Editing"],
     status: "Pinned",
   },
   Game_Development: {
@@ -157,13 +171,13 @@ const repoDisplayCopy = {
   },
   Codexa: {
     description:
-      "A TypeScript dev tool built around AI-assisted coding workflows. Still being developed.",
-    tags: ["TypeScript", "Developer Tools", "AI"],
+      "A terminal-native skin for Codex — chatting with ChatGPT from the CLI, but with the typography, colour, and rhythm of a modern UI.",
+    tags: ["TypeScript", "Terminal UI", "Developer Experience"],
     status: "Active",
   },
   "hp-prime-ppl-python": {
     description:
-      "Scripting for the HP Prime and related Python utilities. Started alongside the BinCalc project.",
+      "Scripting for the HP Prime and related Python utilities — base conversion, menu-driven helpers, and small calculator tools.",
     tags: ["Python", "HP Prime", "Tooling"],
     status: "Utility",
   },
@@ -207,29 +221,810 @@ function MagneticLink({ href, children }) {
   );
 }
 
+/* ─── Scene visual hero strip (upper ~38% of lens) ─── */
 function ProjectVisual({ project, active }) {
   return (
     <div className={`project-visual tone-${project.tone} ${active ? "is-active" : ""}`}>
-      <div className="visual-horizon" />
-      <div className="visual-grid" />
-      <div className="visual-orbit visual-orbit-a" />
-      <div className="visual-orbit visual-orbit-b" />
-      <div className="visual-orbit visual-orbit-c" />
-      <div className="visual-core">
-        <span>{project.id}</span>
-        <div className="visual-pulse" />
+      <div className="pv-bg" />
+      <div className="pv-grid" />
+      <div className={`pv-hero pv-hero-${project.preview}`}>
+        {project.preview === "editor" && (
+          <>
+            <div className="pvh-editor-lanes">
+              <div className="pvh-lane pvh-lane-a" />
+              <div className="pvh-lane pvh-lane-b" />
+              <div className="pvh-lane pvh-lane-c" />
+            </div>
+            <div className="pvh-collab-dots">
+              <span className="pvh-dot pvh-dot-cyan">J</span>
+              <span className="pvh-dot pvh-dot-amber">M</span>
+              <span className="pvh-connector" />
+            </div>
+            <div className="pvh-sync-ring" />
+          </>
+        )}
+        {project.preview === "pos" && (
+          <>
+            <div className="pvh-pos-stack">
+              <div className="pvh-pos-card pvh-pos-invoice">INV-432</div>
+              <div className="pvh-pos-card pvh-pos-contract">CONTRACT</div>
+              <div className="pvh-pos-card pvh-pos-stock">STOCK</div>
+            </div>
+            <div className="pvh-pos-signal" />
+          </>
+        )}
+        {project.preview === "terminal" && (
+          <>
+            <div className="pvh-term-lines">
+              <div className="pvh-tline pvh-tline-prompt">❯ refactor auth module</div>
+              <div className="pvh-tline pvh-tline-ai">codexa  ›  pulling retry into withRetry(fn)</div>
+              <div className="pvh-tline pvh-tline-code">  async function withRetry(fn, opts) …</div>
+              <div className="pvh-tline pvh-tline-dim">  // intent preserved, backoff isolated</div>
+            </div>
+            <div className="pvh-term-cursor" />
+          </>
+        )}
+        {project.preview === "edu" && (
+          <>
+            <div className="pvh-edu-bars">
+              <div className="pvh-edu-bar" style={{ width: "88%", opacity: 0.9 }} />
+              <div className="pvh-edu-bar" style={{ width: "72%", opacity: 0.75 }} />
+              <div className="pvh-edu-bar pvh-edu-bar-active" style={{ width: "57%" }} />
+            </div>
+            <div className="pvh-edu-pass-fail">
+              <span className="pvh-pass">✓</span>
+              <span className="pvh-pass">✓</span>
+              <span className="pvh-pass">✓</span>
+              <span className="pvh-fail">✗</span>
+            </div>
+          </>
+        )}
+        {project.preview === "geoquest" && (
+          <>
+            <div className="pvh-geo-horizon" />
+            <div className="pvh-geo-crosshair">
+              <span /><span /><span />
+            </div>
+            <div className="pvh-geo-hud">
+              <div className="pvh-geo-pill">Round 4/5</div>
+              <div className="pvh-geo-pill pvh-geo-pill-score">2,450 pts</div>
+            </div>
+          </>
+        )}
+        {project.preview === "rugby" && (
+          <>
+            <div className="pvh-rugby-bracket">
+              <div className="pvh-rb-match pvh-rb-live">Grey 21–17 Framesby</div>
+              <div className="pvh-rb-match">Pearson — vs — Hudson Park</div>
+              <div className="pvh-rb-match pvh-rb-next">Selborne — vs — Dale</div>
+            </div>
+          </>
+        )}
+        {project.preview === "perf" && (
+          <>
+            <div className="pvh-perf-bars">
+              {[42, 38, 46, 39, 41, 52, 37, 44, 36, 48, 39, 42].map((h, i) => (
+                <div key={i} className="pvh-perf-bar" style={{ height: `${h}%` }} />
+              ))}
+            </div>
+            <div className="pvh-perf-stat">
+              <span className="pvh-perf-val pvh-green">6.8ms</span>
+              <span className="pvh-perf-label">input latency</span>
+            </div>
+          </>
+        )}
       </div>
-      <div className="visual-scanline" />
-      <div className="visual-corner visual-corner-tl" />
-      <div className="visual-corner visual-corner-tr" />
-      <div className="visual-corner visual-corner-bl" />
-      <div className="visual-corner visual-corner-br" />
-      <div className="visual-transition-flash" />
-      <div className="visual-bars">
-        <i />
-        <i />
-        <i />
-        <i />
+      <div className="pv-corner pv-corner-tl" />
+      <div className="pv-corner pv-corner-tr" />
+      <div className="pv-corner pv-corner-bl" />
+      <div className="pv-corner pv-corner-br" />
+      <div className="pv-scanline" />
+      <div className="pv-flash" />
+    </div>
+  );
+}
+
+/* ─── Project preview panels ─── */
+
+function EditorPreview() {
+  return (
+    <div className="aw aw-editor" aria-hidden="true">
+      {/* Chrome bar */}
+      <div className="aw-chrome">
+        <div className="aw-dots"><i /><i /><i /></div>
+        <div className="aw-tab">
+          <span className="aw-tab-dot aw-tab-dot-a" />
+          project-notes.md
+        </div>
+        <div className="aw-tab">
+          <span className="aw-tab-dot aw-tab-dot-b" />
+          design-brief.md
+        </div>
+        <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-cyan">● Jordan</span>
+          <span className="aw-badge aw-badge-amber">● Mia</span>
+          <span className="aw-meta">2 live</span>
+        </div>
+      </div>
+
+      {/* Body */}
+      <div className="aw-body aw-split">
+        {/* Outline sidebar */}
+        <div className="aw-sidebar aw-sidebar-narrow">
+          <div className="aws-section">Outline</div>
+          <div className="aws-item aws-item-active">Introduction</div>
+          <div className="aws-item">Problem statement</div>
+          <div className="aws-item">Design decisions</div>
+          <div className="aws-item">Implementation</div>
+          <div className="aws-divider" />
+          <div className="aws-section">Collaborators</div>
+          <div className="aws-collab">
+            <span className="aws-avatar aws-avatar-a">J</span>
+            <div className="aws-collab-info">
+              <span>Jordan</span>
+              <em>editing</em>
+            </div>
+          </div>
+          <div className="aws-collab">
+            <span className="aws-avatar aws-avatar-b">M</span>
+            <div className="aws-collab-info">
+              <span>Mia</span>
+              <em>viewing</em>
+            </div>
+          </div>
+          <div className="aws-presence-bar" />
+        </div>
+
+        {/* Document area */}
+        <div className="aw-main aw-doc">
+          <div className="awd-ruler">1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5</div>
+
+          <div className="awd-h1">Introduction<span className="awd-caret awd-caret-a" /></div>
+          <div className="awd-p">This document outlines the real-time collaboration</div>
+          <div className="awd-p">approach used in SynchroEdit. Two or more users can</div>
+          <div className="awd-p">type in the same file simultaneously — edits are merged</div>
+          <div className="awd-p awd-selected">on every keystroke using operational transforms.<span className="awd-caret awd-caret-b" /></div>
+          <div className="awd-br" />
+
+          <div className="awd-h2">Problem statement</div>
+          <div className="awd-p awd-muted">Classic conflict: two users change the same line at</div>
+          <div className="awd-p awd-muted">the same time. Who wins? OT resolves this by tracking</div>
+          <div className="awd-p awd-muted">intent, not just position.</div>
+
+          {/* Activity feed strip */}
+          <div className="awd-activity">
+            <div className="awd-activity-item">
+              <span className="awd-act-dot awd-act-dot-cyan" />
+              Jordan inserted 3 chars at L14
+            </div>
+            <div className="awd-activity-item">
+              <span className="awd-act-dot awd-act-dot-amber" />
+              Mia selected paragraph 2
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Status bar */}
+      <div className="aw-statusbar">
+        <span>Ln 14, Col 38</span>
+        <span>UTF-8</span>
+        <span className="aws-sync">⟳ Synced</span>
+        <span className="aws-dot-sep" />
+        <span className="aws-users-live">2 users connected</span>
+        <span className="aws-latency">12ms</span>
+      </div>
+    </div>
+  );
+}
+
+function PosPreview() {
+  return (
+    <div className="aw aw-pos" aria-hidden="true">
+      <div className="aw-chrome">
+        <div className="aw-dots"><i /><i /><i /></div>
+        <span className="aw-title">TryPOS Suite</span>
+        <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-green">● Live</span>
+        </div>
+      </div>
+
+      <div className="aw-body aw-split">
+        {/* Sidebar */}
+        <div className="aw-sidebar">
+          <div className="aws-brand">TryPOS</div>
+          <div className="aws-section">Navigation</div>
+          <div className="aws-nav-item aws-nav-active"><span>◈</span> Dashboard</div>
+          <div className="aws-nav-item"><span>◉</span> Invoices</div>
+          <div className="aws-nav-item"><span>◫</span> Inventory</div>
+          <div className="aws-nav-item"><span>◧</span> Contracts</div>
+          <div className="aws-nav-item"><span>◌</span> Reports</div>
+          <div className="aws-divider" />
+          <div className="aws-section">Status</div>
+          <div className="aws-stat"><span>Stock items</span><strong>84</strong></div>
+          <div className="aws-stat"><span>Open invoices</span><strong>3</strong></div>
+          <div className="aws-stat"><span>Contracts</span><strong>11</strong></div>
+        </div>
+
+        {/* Main content — invoice panel */}
+        <div className="aw-main awp-main-col">
+          {/* Mini KPI strip */}
+          <div className="awp-kpi-strip">
+            <div className="awp-kpi">
+              <div className="awp-kpi-label">Today's sales</div>
+              <div className="awp-kpi-value awp-kpi-green">R 8,420</div>
+            </div>
+            <div className="awp-kpi">
+              <div className="awp-kpi-label">Invoices out</div>
+              <div className="awp-kpi-value">3</div>
+            </div>
+            <div className="awp-kpi">
+              <div className="awp-kpi-label">Low stock</div>
+              <div className="awp-kpi-value awp-kpi-amber">4</div>
+            </div>
+          </div>
+
+          {/* Invoice detail */}
+          <div className="awp-doc-header">
+            <div>
+              <div className="awp-doc-title">Invoice #INV-00432</div>
+              <div className="awp-doc-sub">Generated 18 Apr 2026 · Net 30</div>
+            </div>
+            <span className="aw-badge aw-badge-amber">Pending</span>
+          </div>
+
+          <div className="awp-table">
+            <div className="awp-table-head">
+              <span>Item</span><span>Qty</span><span>Unit</span><span>Total</span>
+            </div>
+            <div className="awp-row">
+              <span>Ceramic mug · 6pk</span><span>2</span><span>R 270</span><span>R 540.00</span>
+            </div>
+            <div className="awp-row">
+              <span>House blend · 250g</span><span>1</span><span>R 189</span><span>R 189.00</span>
+            </div>
+            <div className="awp-row">
+              <span>Service contract</span><span>1</span><span>R 1 200</span><span>R 1 200.00</span>
+            </div>
+          </div>
+
+          <div className="awp-totals">
+            <div className="awp-total-row"><span>Subtotal</span><span>R 1 929.00</span></div>
+            <div className="awp-total-row"><span>VAT 15%</span><span>R 289.35</span></div>
+            <div className="awp-total-row awp-grand"><span>Total due</span><span>R 2 218.35</span></div>
+          </div>
+
+          <div className="awp-actions">
+            <button className="awp-btn awp-btn-primary">Generate PDF</button>
+            <button className="awp-btn">Save contract</button>
+            <button className="awp-btn">Update stock</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TerminalPreview() {
+  return (
+    <div className="aw aw-terminal" aria-hidden="true">
+      <div className="aw-chrome aw-chrome-dark">
+        <div className="aw-dots"><i className="aw-dot-red"/><i className="aw-dot-yellow"/><i className="aw-dot-green"/></div>
+        <span className="aw-title">Codexa</span>
+        <div className="aw-chrome-right">
+          <span className="awt-model">gpt-4o</span>
+          <span className="aw-badge aw-badge-green">● Connected</span>
+        </div>
+      </div>
+
+      <div className="aw-body aw-split">
+        {/* Session history */}
+        <div className="aw-sidebar aw-sidebar-narrow awt-history">
+          <div className="aws-section">Sessions</div>
+          <div className="awt-session awt-session-active">refactor auth</div>
+          <div className="awt-session">write test suite</div>
+          <div className="awt-session">explain deploy script</div>
+          <div className="awt-session">review PR diff</div>
+          <div className="aws-divider" />
+          <div className="aws-section">Model</div>
+          <div className="awt-model-tag">gpt-4o</div>
+          <div className="awt-theme-row">
+            <div className="awt-theme-dot" style={{ background: "#c7a46f" }} />
+            <div className="awt-theme-dot" style={{ background: "#6fb9c7" }} />
+            <div className="awt-theme-dot" style={{ background: "#7ab88a" }} />
+          </div>
+        </div>
+
+        {/* Chat panel */}
+        <div className="aw-main awt-chat">
+          <div className="awt-msg awt-user">
+            <span className="awt-role">you</span>
+            <div className="awt-bubble awt-bubble-user">
+              refactor this so the retry logic is in its own helper
+            </div>
+          </div>
+
+          <div className="awt-msg awt-ai">
+            <span className="awt-role awt-role-ai">codexa</span>
+            <div className="awt-bubble awt-bubble-ai">
+              <div>Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
+            </div>
+          </div>
+
+          <div className="awt-code-block">
+            <div className="awt-code-head">
+              <span className="awt-code-lang">ts</span>
+              <span>suggestion.ts</span>
+              <span className="awt-code-copy">copy</span>
+            </div>
+            <pre>{`async function withRetry(fn, { max = 3 }) {
+  for (let i = 0; i < max; i++) {
+    try { return await fn(); }
+    catch (e) { if (i === max-1) throw e; }
+  }
+}`}</pre>
+          </div>
+
+          <div className="awt-composer">
+            <span className="awt-prompt-icon">❯</span>
+            <span className="awt-placeholder">Ask anything<span className="awt-cursor" /></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EduPreview() {
+  return (
+    <div className="aw aw-edu" aria-hidden="true">
+      <div className="aw-chrome">
+        <div className="aw-dots"><i /><i /><i /></div>
+        <span className="aw-title">EduTool</span>
+        <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-green">4 / 7 passing</span>
+        </div>
+      </div>
+
+      <div className="aw-body aw-split">
+        {/* Modules sidebar */}
+        <div className="aw-sidebar">
+          <div className="aws-section">Modules</div>
+          <div className="aws-nav-item">Data Structures</div>
+          <div className="aws-nav-item">Algorithms</div>
+          <div className="aws-nav-item aws-nav-active">Recursion</div>
+          <div className="aws-nav-item">Sorting</div>
+          <div className="aws-nav-item">Graphs</div>
+          <div className="aws-divider" />
+          <div className="aws-section">Progress</div>
+          <div className="awe-progress-row"><span>DS</span><div className="awe-bar"><div style={{ width: "88%" }} /></div></div>
+          <div className="awe-progress-row"><span>Algo</span><div className="awe-bar"><div style={{ width: "72%" }} /></div></div>
+          <div className="awe-progress-row"><span>Rec</span><div className="awe-bar awe-bar-active"><div style={{ width: "57%" }} /></div></div>
+        </div>
+
+        {/* Exercise content */}
+        <div className="aw-main awe-content">
+          <div className="awe-exercise-label">Exercise 04 · Recursion</div>
+          <div className="awe-task">Write a recursive factorial function in Python.</div>
+
+          <pre className="awe-code">
+{`def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)`}
+          </pre>
+
+          <div className="awe-tests">
+            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(0) == 1</div>
+            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(5) == 120</div>
+            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(1) == 1</div>
+            <div className="awe-test awe-fail"><span className="awe-icon">✗</span> handles negative input</div>
+          </div>
+
+          <div className="awe-feedback">
+            Feedback: add a guard for <code>n {"<"} 0</code> to handle edge cases.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GeoQuestPreview() {
+  return (
+    <div className="aw aw-geo" aria-hidden="true">
+      <div className="aw-geo-scene">
+        <div className="awg-sky" />
+        <div className="awg-horizon" />
+        <div className="awg-ground" />
+
+        {/* Atmospheric depth layers */}
+        <div className="awg-depth-a" />
+        <div className="awg-depth-b" />
+
+        {/* HUD top */}
+        <div className="awg-hud-top">
+          <div className="awg-hud-pill">
+            <span className="awg-label">Round</span>
+            <strong>4 / 5</strong>
+          </div>
+          <div className="awg-hud-pill awg-score">
+            <span className="awg-label">Score</span>
+            <strong>2,450 pts</strong>
+          </div>
+          <div className="awg-hud-pill">
+            <span className="awg-label">Timer</span>
+            <strong>0:42</strong>
+          </div>
+        </div>
+
+        {/* Crosshair */}
+        <div className="awg-crosshair">
+          <span className="awg-ch-h" /><span className="awg-ch-v" />
+          <span className="awg-ch-ring" />
+          <span className="awg-ch-dot" />
+        </div>
+
+        {/* Bearing label */}
+        <div className="awg-bearing">N 34° E · 142m</div>
+
+        {/* Location tag */}
+        <div className="awg-location-tag">Coastline · Eastern Cape</div>
+
+        {/* Minimap */}
+        <div className="awg-minimap">
+          <div className="awg-minimap-label">Map</div>
+          <div className="awg-pin" />
+        </div>
+      </div>
+
+      {/* Result card */}
+      <div className="awg-result-card">
+        <div className="awg-result-header">
+          <span>Guess placed</span>
+          <span className="awg-result-dist">62 km off</span>
+        </div>
+        <div className="awg-result-body">
+          <div className="awg-result-row">
+            <span>Your guess</span>
+            <strong>Port Alfred</strong>
+          </div>
+          <div className="awg-result-row">
+            <span>Actual location</span>
+            <strong>Kenton-on-Sea</strong>
+          </div>
+          <div className="awg-result-row">
+            <span>Points awarded</span>
+            <strong className="awg-pts">+820 pts</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RugbyPreview() {
+  return (
+    <div className="aw aw-rugby" aria-hidden="true">
+      <div className="aw-chrome">
+        <div className="aw-dots"><i /><i /><i /></div>
+        <span className="aw-title">RugbyMate</span>
+        <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-amber">● Day 1 Live</span>
+        </div>
+      </div>
+
+      <div className="aw-body aw-split">
+        <div className="aw-sidebar">
+          <div className="aws-brand">RugbyMate</div>
+          <div className="aws-section">Views</div>
+          <div className="aws-nav-item aws-nav-active"><span>◈</span> Fixtures</div>
+          <div className="aws-nav-item"><span>◉</span> Bracket</div>
+          <div className="aws-nav-item"><span>◫</span> Teams</div>
+          <div className="aws-nav-item"><span>◧</span> Schedule</div>
+          <div className="aws-divider" />
+          <div className="aws-section">Today</div>
+          <div className="aws-stat"><span>Matches</span><strong>8</strong></div>
+          <div className="aws-stat"><span>Fields</span><strong>2</strong></div>
+          <div className="aws-stat"><span>Teams</span><strong>12</strong></div>
+        </div>
+
+        <div className="aw-main awr-fixtures">
+          {/* Day label */}
+          <div className="awr-day-header">
+            <div className="awr-day-label">Saturday · Pool Stage</div>
+            <div className="awr-day-progress">
+              <div className="awr-day-fill" style={{ width: "50%" }} />
+            </div>
+          </div>
+
+          <div className="awr-match awr-match-live">
+            <div className="awr-kick">Field A · 09:00</div>
+            <div className="awr-teams">
+              <span className="awr-team">Grey</span>
+              <span className="awr-score awr-score-live">21 — 17</span>
+              <span className="awr-team">Framesby</span>
+            </div>
+            <span className="awr-status awr-live">FT</span>
+          </div>
+
+          <div className="awr-match">
+            <div className="awr-kick">Field B · 09:40</div>
+            <div className="awr-teams">
+              <span className="awr-team">Pearson</span>
+              <span className="awr-score">— vs —</span>
+              <span className="awr-team">Hudson Park</span>
+            </div>
+            <span className="awr-status">KO</span>
+          </div>
+
+          <div className="awr-match awr-match-upcoming">
+            <div className="awr-kick">Field A · 10:20</div>
+            <div className="awr-teams">
+              <span className="awr-team">Selborne</span>
+              <span className="awr-score">— vs —</span>
+              <span className="awr-team">Dale</span>
+            </div>
+            <span className="awr-status awr-upcoming">Next</span>
+          </div>
+
+          <div className="awr-match">
+            <div className="awr-kick">Field B · 11:00</div>
+            <div className="awr-teams">
+              <span className="awr-team">Graeme</span>
+              <span className="awr-score">— vs —</span>
+              <span className="awr-team">Queens</span>
+            </div>
+            <span className="awr-status">TBD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PerfPreview() {
+  return (
+    <div className="aw aw-perf" aria-hidden="true">
+      <div className="aw-chrome">
+        <div className="aw-dots"><i /><i /><i /></div>
+        <span className="aw-title">GameOpt</span>
+        <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-green">● Stable</span>
+        </div>
+      </div>
+
+      <div className="aw-body aw-split">
+        <div className="aw-sidebar">
+          <div className="aws-section">Profiles</div>
+          <div className="aws-nav-item aws-nav-active"><span>◈</span> Gaming</div>
+          <div className="aws-nav-item"><span>◉</span> Desktop</div>
+          <div className="aws-nav-item"><span>◫</span> Low-latency</div>
+          <div className="aws-divider" />
+          <div className="aws-section">System</div>
+          <div className="aws-stat"><span>Kernel</span><strong>6.8 tuned</strong></div>
+          <div className="aws-stat"><span>CPU gov</span><strong>performance</strong></div>
+          <div className="aws-stat"><span>IRQ</span><strong>pinned</strong></div>
+        </div>
+
+        <div className="aw-main awp-lab">
+          {/* Metric cards */}
+          <div className="awpl-metric-row">
+            <div className="awpl-metric awpl-metric-highlight">
+              <div className="awpl-label">Input latency</div>
+              <div className="awpl-value awpl-green">6.8 ms</div>
+            </div>
+            <div className="awpl-metric">
+              <div className="awpl-label">FPS avg</div>
+              <div className="awpl-value">214</div>
+            </div>
+            <div className="awpl-metric awpl-metric-warn">
+              <div className="awpl-label">1% low</div>
+              <div className="awpl-value awpl-amber">142</div>
+            </div>
+          </div>
+
+          {/* Frame-time chart */}
+          <div className="awpl-chart">
+            <div className="awpl-chart-label">Frame time (ms)</div>
+            <div className="awpl-bars">
+              {[4.2,3.8,4.6,3.9,4.1,5.2,3.7,4.4,3.6,4.8,3.9,4.2].map((h,i)=>(
+                <div key={i} className={`awpl-bar${h > 5 ? " awpl-bar-spike" : ""}`} style={{ height: `${h * 11}%` }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Active tweaks */}
+          <div className="awpl-config">
+            <div className="awpl-config-label">Active tweaks</div>
+            <div className="awpl-tags-row">
+              <div className="awpl-tag">isolcpus=0-3</div>
+              <div className="awpl-tag">rcu_nocbs</div>
+              <div className="awpl-tag">mitigations=off</div>
+              <div className="awpl-tag">threadirq</div>
+              <div className="awpl-tag awpl-tag-accent">PREEMPT_RT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProjectPreview({ project, active }) {
+  const kinds = {
+    editor: EditorPreview,
+    pos: PosPreview,
+    terminal: TerminalPreview,
+    edu: EduPreview,
+    geoquest: GeoQuestPreview,
+    rugby: RugbyPreview,
+    perf: PerfPreview,
+  };
+  const Component = kinds[project.preview];
+  if (!Component) return null;
+  return (
+    <div
+      className={`project-preview tone-${project.tone} preview-kind-${project.preview} ${active ? "is-active" : ""}`}
+    >
+      <Component />
+    </div>
+  );
+}
+
+/* ─── About / Human layer map ─── */
+function AboutMap() {
+  return (
+    <div className="about-map" aria-hidden="true">
+      {/* Deep background tint */}
+      <div className="am-backdrop" />
+      {/* Graticule grid */}
+      <div className="am-graticule" />
+
+      <svg
+        className="about-map-svg"
+        viewBox="0 0 320 240"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          {/* Glow filter for highlighted province */}
+          <filter id="map-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          {/* Pin glow */}
+          <filter id="pin-glow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          {/* Country gradient fill */}
+          <linearGradient id="sa-fill" x1="0" y1="0" x2="0.4" y2="1">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.06)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0.018)" />
+          </linearGradient>
+          {/* EC province glow fill */}
+          <radialGradient id="ec-fill" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stopColor="rgba(95,147,111,0.38)" />
+            <stop offset="100%" stopColor="rgba(95,147,111,0.12)" />
+          </radialGradient>
+          {/* Continuous ocean line */}
+          <linearGradient id="coast-grad" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="rgba(111,185,199,0.35)" />
+            <stop offset="50%" stopColor="rgba(111,185,199,0.15)" />
+            <stop offset="100%" stopColor="rgba(111,185,199,0.08)" />
+          </linearGradient>
+        </defs>
+
+        {/* ── Ocean / shelf ── */}
+        <rect x="0" y="0" width="320" height="240" fill="rgba(6,12,20,0.0)" />
+        <path
+          className="am-shelf"
+          d="M0,190 C40,178 90,185 148,175 C196,166 248,148 295,156 L320,156 L320,240 L0,240 Z"
+        />
+        {/* Subtle ocean grid lines */}
+        <line x1="0" y1="200" x2="320" y2="200" className="am-ocean-line" />
+        <line x1="0" y1="215" x2="320" y2="215" className="am-ocean-line" opacity="0.5" />
+        <line x1="0" y1="228" x2="320" y2="228" className="am-ocean-line" opacity="0.25" />
+
+        {/* ── South Africa main body ── */}
+        <path
+          className="am-country"
+          d="
+            M38,72
+            L54,58 L78,50 L104,46
+            L130,44 L156,48 L178,56
+            L200,66 L218,80 L230,100
+            L232,118 L224,136
+            L210,152 L193,164
+            L172,172 L148,176
+            L124,174 L100,168
+            L80,158 L62,144
+            L48,128 L40,108
+            L36,88 Z
+          "
+        />
+
+        {/* ── Province dividers (internal boundaries) ── */}
+        <path className="am-divider" d="M104,55 L112,85 L126,115 L138,148 L152,168" />
+        <path className="am-divider" d="M156,52 L168,80 L182,108 L192,140 L186,162" />
+        <path className="am-divider" d="M178,60 L188,84 L196,110 L208,138" />
+        <path className="am-divider" d="M60,100 L80,112 L108,126 L128,130" />
+        <path className="am-divider" d="M86,140 L108,148 L124,152" />
+
+        {/* ── Lesotho enclave ── */}
+        <path
+          className="am-lesotho"
+          d="M158,108 L174,104 L182,116 L176,128 L162,128 L154,118 Z"
+        />
+
+        {/* ── Eastern Cape province (highlighted) ── */}
+        <path
+          className="am-province"
+          d="
+            M126,122 L148,118 L170,122
+            L188,134 L200,150
+            L194,166 L178,174
+            L156,178 L134,174
+            L112,166 L100,150
+            L104,136 Z
+          "
+          filter="url(#map-glow)"
+        />
+
+        {/* ── Coastline accent ── */}
+        <path
+          className="am-coast"
+          d="M62,144 L80,158 L100,168 L124,174 L148,176 L172,172 L193,164 L210,152 L224,136"
+          stroke="url(#coast-grad)"
+        />
+
+        {/* ── Location pin — Gqeberha / Port Elizabeth ── */}
+        {/* Dashed leader line to label area */}
+        <line className="am-pin-leader" x1="152" y1="158" x2="204" y2="128" />
+
+        {/* Pin group */}
+        <g filter="url(#pin-glow)">
+          {/* Outer pulse ring */}
+          <circle className="am-pin-halo" cx="152" cy="158" r="11" />
+          {/* Mid ring */}
+          <circle className="am-pin-ring" cx="152" cy="158" r="5" />
+          {/* Core dot */}
+          <circle className="am-pin-core" cx="152" cy="158" r="2" />
+        </g>
+
+        {/* ── Label callout box — Gqeberha ── */}
+        <rect
+          className="am-callout-box"
+          x="206" y="114" width="76" height="30" rx="2"
+        />
+        <text className="am-callout-city" x="244" y="125">GQEBERHA</text>
+        <text className="am-callout-sub" x="244" y="136">Port Elizabeth · EC</text>
+
+        {/* ── Coordinate crosshair at pin ── */}
+        <line x1="152" y1="150" x2="152" y2="144" className="am-pin-cross" />
+        <line x1="144" y1="158" x2="138" y2="158" className="am-pin-cross" />
+        <line x1="160" y1="158" x2="166" y2="158" className="am-pin-cross" />
+      </svg>
+
+      {/* Floating HUD labels */}
+      <div className="am-hud-top-left">
+        <div className="am-hud-label">SOUTH AFRICA</div>
+      </div>
+      <div className="am-hud-province">
+        <div className="am-hud-ec">EASTERN CAPE</div>
+      </div>
+
+      {/* Bottom status bar */}
+      <div className="am-status-bar">
+        <span className="am-status-id">ID_LAYER_06</span>
+        <span className="am-status-loc">South Africa · Eastern Cape · Gqeberha</span>
+        <span className="am-status-coord">33°58'S 25°36'E</span>
       </div>
     </div>
   );
@@ -652,6 +1447,13 @@ function App() {
             {projects.map((project, index) => (
               <ProjectVisual key={project.title} project={project} active={activeProject === index} />
             ))}
+            {projects.map((project, index) => (
+              <ProjectPreview
+                key={`preview-${project.title}`}
+                project={project}
+                active={activeProject === index}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -786,14 +1588,8 @@ function App() {
         <div className="about-visual" aria-hidden="true">
           <div className="portrait-light" />
           <div className="portrait-grid" />
-          <div className="portrait-silhouette" />
           <div className="portrait-scan" />
-          <div className="portrait-crosshair" />
-          <div className="portrait-hud">
-            <span>ID_LAYER_06</span>
-            <span>Eastern Cape · ZA</span>
-            <span>BSc CS · Active</span>
-          </div>
+          <AboutMap />
         </div>
         <div className="about-copy">
           <p className="eyebrow fade-rise">About</p>
@@ -802,10 +1598,10 @@ function App() {
           </h2>
           <p className="fade-rise">
             I'm based in the Eastern Cape and studying CS through the University of
-            London. Outside of coursework I build small systems — event software, calculator
-            tools, file scripts, game experiments. I've also worked real jobs in hospitality
-            and a property internship, which taught me more about communication and
-            reliability than most courses do.
+            London. Outside of coursework I build practical products: collaborative editors,
+            business software, developer tooling, and interactive systems. I have also worked
+            in hospitality and a property internship, which taught me how to communicate
+            clearly and stay reliable when things get busy.
           </p>
         </div>
       </section>
