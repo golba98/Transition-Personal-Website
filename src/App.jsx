@@ -329,7 +329,7 @@ function ProjectVisual({ project, active }) {
 function EditorPreview() {
   return (
     <div className="aw aw-editor" aria-hidden="true">
-      {/* Chrome bar */}
+      {/* Chrome bar — collab presence lives here */}
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
         <div className="aw-tab">
@@ -347,60 +347,31 @@ function EditorPreview() {
         </div>
       </div>
 
-      {/* Body */}
-      <div className="aw-body aw-split">
-        {/* Outline sidebar */}
-        <div className="aw-sidebar aw-sidebar-narrow">
-          <div className="aws-section">Outline</div>
-          <div className="aws-item aws-item-active">Introduction</div>
-          <div className="aws-item">Problem statement</div>
-          <div className="aws-item">Design decisions</div>
-          <div className="aws-item">Implementation</div>
-          <div className="aws-divider" />
-          <div className="aws-section">Collaborators</div>
-          <div className="aws-collab">
-            <span className="aws-avatar aws-avatar-a">J</span>
-            <div className="aws-collab-info">
-              <span>Jordan</span>
-              <em>editing</em>
-            </div>
+      {/* Full-width document canvas — no sidebar */}
+      <div className="aw-body awd-canvas">
+        <div className="awd-ruler">1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;7</div>
+        <div className="awd-h1">Introduction<span className="awd-caret awd-caret-a" /></div>
+        <div className="awd-p">This document outlines the real-time collaboration</div>
+        <div className="awd-p">approach used in SynchroEdit. Two or more users can</div>
+        <div className="awd-p">type in the same file simultaneously — edits are merged</div>
+        <div className="awd-p awd-selected">on every keystroke using operational transforms.<span className="awd-caret awd-caret-b" /></div>
+        <div className="awd-br" />
+        <div className="awd-h2">Problem statement</div>
+        <div className="awd-p awd-muted">Classic conflict: two users change the same line at</div>
+        <div className="awd-p awd-muted">the same time. Who wins? OT resolves this by tracking</div>
+        <div className="awd-p awd-muted">intent, not just position.</div>
+        <div className="awd-br" />
+        <div className="awd-h2">Design decisions</div>
+        <div className="awd-p awd-muted">Operational transforms preserve each user's intent</div>
+        <div className="awd-p awd-muted">even under concurrent edits at the same offset.</div>
+        <div className="awd-activity">
+          <div className="awd-activity-item">
+            <span className="awd-act-dot awd-act-dot-cyan" />
+            Jordan inserted 3 chars at L14
           </div>
-          <div className="aws-collab">
-            <span className="aws-avatar aws-avatar-b">M</span>
-            <div className="aws-collab-info">
-              <span>Mia</span>
-              <em>viewing</em>
-            </div>
-          </div>
-          <div className="aws-presence-bar" />
-        </div>
-
-        {/* Document area */}
-        <div className="aw-main aw-doc">
-          <div className="awd-ruler">1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5</div>
-
-          <div className="awd-h1">Introduction<span className="awd-caret awd-caret-a" /></div>
-          <div className="awd-p">This document outlines the real-time collaboration</div>
-          <div className="awd-p">approach used in SynchroEdit. Two or more users can</div>
-          <div className="awd-p">type in the same file simultaneously — edits are merged</div>
-          <div className="awd-p awd-selected">on every keystroke using operational transforms.<span className="awd-caret awd-caret-b" /></div>
-          <div className="awd-br" />
-
-          <div className="awd-h2">Problem statement</div>
-          <div className="awd-p awd-muted">Classic conflict: two users change the same line at</div>
-          <div className="awd-p awd-muted">the same time. Who wins? OT resolves this by tracking</div>
-          <div className="awd-p awd-muted">intent, not just position.</div>
-
-          {/* Activity feed strip */}
-          <div className="awd-activity">
-            <div className="awd-activity-item">
-              <span className="awd-act-dot awd-act-dot-cyan" />
-              Jordan inserted 3 chars at L14
-            </div>
-            <div className="awd-activity-item">
-              <span className="awd-act-dot awd-act-dot-amber" />
-              Mia selected paragraph 2
-            </div>
+          <div className="awd-activity-item">
+            <span className="awd-act-dot awd-act-dot-amber" />
+            Mia selected paragraph 2
           </div>
         </div>
       </div>
@@ -423,81 +394,77 @@ function PosPreview() {
     <div className="aw aw-pos" aria-hidden="true">
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">TryPOS Suite</span>
+        <span className="aw-title">TryPOS Suite — INV-00432</span>
         <div className="aw-chrome-right">
+          <span className="aw-badge aw-badge-amber">Pending</span>
           <span className="aw-badge aw-badge-green">● Live</span>
         </div>
       </div>
 
-      <div className="aw-body aw-split">
-        {/* Sidebar */}
-        <div className="aw-sidebar">
-          <div className="aws-brand">TryPOS</div>
-          <div className="aws-section">Navigation</div>
-          <div className="aws-nav-item aws-nav-active"><span>◈</span> Dashboard</div>
-          <div className="aws-nav-item"><span>◉</span> Invoices</div>
-          <div className="aws-nav-item"><span>◫</span> Inventory</div>
-          <div className="aws-nav-item"><span>◧</span> Contracts</div>
-          <div className="aws-nav-item"><span>◌</span> Reports</div>
-          <div className="aws-divider" />
-          <div className="aws-section">Status</div>
-          <div className="aws-stat"><span>Stock items</span><strong>84</strong></div>
-          <div className="aws-stat"><span>Open invoices</span><strong>3</strong></div>
-          <div className="aws-stat"><span>Contracts</span><strong>11</strong></div>
+      {/* KPI bar — full-width, no sidebar */}
+      <div className="awpos-kpi-bar">
+        <div className="awpos-kpi-item">
+          <span className="awpos-kpi-label">Today's sales</span>
+          <span className="awpos-kpi-value awpos-green">R 8,420</span>
+        </div>
+        <div className="awpos-kpi-divider" />
+        <div className="awpos-kpi-item">
+          <span className="awpos-kpi-label">Invoices out</span>
+          <span className="awpos-kpi-value">3</span>
+        </div>
+        <div className="awpos-kpi-divider" />
+        <div className="awpos-kpi-item">
+          <span className="awpos-kpi-label">Low stock alerts</span>
+          <span className="awpos-kpi-value awpos-amber">4</span>
+        </div>
+        <div className="awpos-kpi-divider" />
+        <div className="awpos-kpi-item">
+          <span className="awpos-kpi-label">Stock items</span>
+          <span className="awpos-kpi-value">84</span>
+        </div>
+      </div>
+
+      {/* POS terminal: cart left, totals right */}
+      <div className="aw-body awpos-terminal">
+        <div className="awpos-cart">
+          <div className="awpos-cart-head">
+            <span>Item</span>
+            <span>Qty</span>
+            <span>Total</span>
+          </div>
+          <div className="awpos-cart-item">
+            <span>Ceramic mug · 6pk</span>
+            <span>× 2</span>
+            <span>R 540.00</span>
+          </div>
+          <div className="awpos-cart-item">
+            <span>House blend · 250g</span>
+            <span>× 1</span>
+            <span>R 189.00</span>
+          </div>
+          <div className="awpos-cart-item awpos-cart-item-highlight">
+            <span>Service contract</span>
+            <span>× 1</span>
+            <span>R 1 200.00</span>
+          </div>
+          <div className="awpos-cart-spacer" />
+          <div className="awpos-sub-row">
+            <span>Subtotal</span>
+            <span>R 1 929.00</span>
+          </div>
+          <div className="awpos-sub-row">
+            <span>VAT 15%</span>
+            <span>R 289.35</span>
+          </div>
         </div>
 
-        {/* Main content — invoice panel */}
-        <div className="aw-main awp-main-col">
-          {/* Mini KPI strip */}
-          <div className="awp-kpi-strip">
-            <div className="awp-kpi">
-              <div className="awp-kpi-label">Today's sales</div>
-              <div className="awp-kpi-value awp-kpi-green">R 8,420</div>
-            </div>
-            <div className="awp-kpi">
-              <div className="awp-kpi-label">Invoices out</div>
-              <div className="awp-kpi-value">3</div>
-            </div>
-            <div className="awp-kpi">
-              <div className="awp-kpi-label">Low stock</div>
-              <div className="awp-kpi-value awp-kpi-amber">4</div>
-            </div>
-          </div>
-
-          {/* Invoice detail */}
-          <div className="awp-doc-header">
-            <div>
-              <div className="awp-doc-title">Invoice #INV-00432</div>
-              <div className="awp-doc-sub">Generated 18 Apr 2026 · Net 30</div>
-            </div>
-            <span className="aw-badge aw-badge-amber">Pending</span>
-          </div>
-
-          <div className="awp-table">
-            <div className="awp-table-head">
-              <span>Item</span><span>Qty</span><span>Unit</span><span>Total</span>
-            </div>
-            <div className="awp-row">
-              <span>Ceramic mug · 6pk</span><span>2</span><span>R 270</span><span>R 540.00</span>
-            </div>
-            <div className="awp-row">
-              <span>House blend · 250g</span><span>1</span><span>R 189</span><span>R 189.00</span>
-            </div>
-            <div className="awp-row">
-              <span>Service contract</span><span>1</span><span>R 1 200</span><span>R 1 200.00</span>
-            </div>
-          </div>
-
-          <div className="awp-totals">
-            <div className="awp-total-row"><span>Subtotal</span><span>R 1 929.00</span></div>
-            <div className="awp-total-row"><span>VAT 15%</span><span>R 289.35</span></div>
-            <div className="awp-total-row awp-grand"><span>Total due</span><span>R 2 218.35</span></div>
-          </div>
-
-          <div className="awp-actions">
-            <button className="awp-btn awp-btn-primary">Generate PDF</button>
-            <button className="awp-btn">Save contract</button>
-            <button className="awp-btn">Update stock</button>
+        <div className="awpos-totals-panel">
+          <div className="awpos-total-label">Total due</div>
+          <div className="awpos-total-hero">R 2 218.35</div>
+          <div className="awpos-total-meta">Generated 18 Apr 2026 · Net 30</div>
+          <div className="awpos-actions">
+            <button className="awpos-btn awpos-btn-primary">Generate PDF</button>
+            <button className="awpos-btn">Save contract</button>
           </div>
         </div>
       </div>
@@ -510,65 +477,51 @@ function TerminalPreview() {
     <div className="aw aw-terminal" aria-hidden="true">
       <div className="aw-chrome aw-chrome-dark">
         <div className="aw-dots"><i className="aw-dot-red"/><i className="aw-dot-yellow"/><i className="aw-dot-green"/></div>
-        <span className="aw-title">Codexa</span>
+        <span className="aw-title">codexa — ~/projects/auth-service</span>
         <div className="aw-chrome-right">
           <span className="awt-model">gpt-4o</span>
           <span className="aw-badge aw-badge-green">● Connected</span>
         </div>
       </div>
 
-      <div className="aw-body aw-split">
-        {/* Session history */}
-        <div className="aw-sidebar aw-sidebar-narrow awt-history">
-          <div className="aws-section">Sessions</div>
-          <div className="awt-session awt-session-active">refactor auth</div>
-          <div className="awt-session">write test suite</div>
-          <div className="awt-session">explain deploy script</div>
-          <div className="awt-session">review PR diff</div>
-          <div className="aws-divider" />
-          <div className="aws-section">Model</div>
-          <div className="awt-model-tag">gpt-4o</div>
-          <div className="awt-theme-row">
-            <div className="awt-theme-dot" style={{ background: "#c7a46f" }} />
-            <div className="awt-theme-dot" style={{ background: "#6fb9c7" }} />
-            <div className="awt-theme-dot" style={{ background: "#7ab88a" }} />
+      {/* Full-width chat — no sidebar */}
+      <div className="aw-body awt-full-term">
+        <div className="awt-msg awt-user">
+          <span className="awt-role">you</span>
+          <div className="awt-bubble awt-bubble-user">
+            refactor this so the retry logic is in its own helper
           </div>
         </div>
 
-        {/* Chat panel */}
-        <div className="aw-main awt-chat">
-          <div className="awt-msg awt-user">
-            <span className="awt-role">you</span>
-            <div className="awt-bubble awt-bubble-user">
-              refactor this so the retry logic is in its own helper
-            </div>
+        <div className="awt-msg awt-ai">
+          <span className="awt-role awt-role-ai">codexa</span>
+          <div className="awt-bubble awt-bubble-ai">
+            <div>Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
           </div>
+        </div>
 
-          <div className="awt-msg awt-ai">
-            <span className="awt-role awt-role-ai">codexa</span>
-            <div className="awt-bubble awt-bubble-ai">
-              <div>Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
-            </div>
+        <div className="awt-code-block">
+          <div className="awt-code-head">
+            <span className="awt-code-lang">ts</span>
+            <span>suggestion.ts</span>
+            <span className="awt-code-copy">copy</span>
           </div>
-
-          <div className="awt-code-block">
-            <div className="awt-code-head">
-              <span className="awt-code-lang">ts</span>
-              <span>suggestion.ts</span>
-              <span className="awt-code-copy">copy</span>
-            </div>
-            <pre>{`async function withRetry(fn, { max = 3 }) {
+          <pre>{`async function withRetry(fn, { max = 3 }) {
   for (let i = 0; i < max; i++) {
     try { return await fn(); }
     catch (e) { if (i === max-1) throw e; }
   }
-}`}</pre>
-          </div>
+}
 
-          <div className="awt-composer">
-            <span className="awt-prompt-icon">❯</span>
-            <span className="awt-placeholder">Ask anything<span className="awt-cursor" /></span>
-          </div>
+// handler is now clean:
+export async function fetchUser(id: string) {
+  return withRetry(() => db.users.findById(id));
+}`}</pre>
+        </div>
+
+        <div className="awt-composer">
+          <span className="awt-prompt-icon">❯</span>
+          <span className="awt-placeholder">Ask anything<span className="awt-cursor" /></span>
         </div>
       </div>
     </div>
@@ -580,50 +533,70 @@ function EduPreview() {
     <div className="aw aw-edu" aria-hidden="true">
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">EduTool</span>
+        <span className="aw-title">EduTool · Recursion</span>
         <div className="aw-chrome-right">
           <span className="aw-badge aw-badge-green">4 / 7 passing</span>
         </div>
       </div>
 
-      <div className="aw-body aw-split">
-        {/* Modules sidebar */}
-        <div className="aw-sidebar">
-          <div className="aws-section">Modules</div>
-          <div className="aws-nav-item">Data Structures</div>
-          <div className="aws-nav-item">Algorithms</div>
-          <div className="aws-nav-item aws-nav-active">Recursion</div>
-          <div className="aws-nav-item">Sorting</div>
-          <div className="aws-nav-item">Graphs</div>
-          <div className="aws-divider" />
-          <div className="aws-section">Progress</div>
-          <div className="awe-progress-row"><span>DS</span><div className="awe-bar"><div style={{ width: "88%" }} /></div></div>
-          <div className="awe-progress-row"><span>Algo</span><div className="awe-bar"><div style={{ width: "72%" }} /></div></div>
-          <div className="awe-progress-row"><span>Rec</span><div className="awe-bar awe-bar-active"><div style={{ width: "57%" }} /></div></div>
+      {/* Full-width challenge card — no sidebar */}
+      <div className="aw-body awedu-challenge">
+        {/* Inline progress strip */}
+        <div className="awedu-progress-strip">
+          <div className="awedu-prog-item">
+            <span className="awedu-prog-label">DS</span>
+            <div className="awedu-prog-bar"><div style={{ width: "88%" }} /></div>
+          </div>
+          <div className="awedu-prog-item">
+            <span className="awedu-prog-label">Algo</span>
+            <div className="awedu-prog-bar"><div style={{ width: "72%" }} /></div>
+          </div>
+          <div className="awedu-prog-item awedu-prog-active">
+            <span className="awedu-prog-label">Rec</span>
+            <div className="awedu-prog-bar awedu-prog-bar-active"><div style={{ width: "57%" }} /></div>
+          </div>
+          <div className="awedu-prog-item">
+            <span className="awedu-prog-label">Sort</span>
+            <div className="awedu-prog-bar"><div style={{ width: "0%" }} /></div>
+          </div>
+          <div className="awedu-prog-item">
+            <span className="awedu-prog-label">Graph</span>
+            <div className="awedu-prog-bar"><div style={{ width: "0%" }} /></div>
+          </div>
         </div>
 
-        {/* Exercise content */}
-        <div className="aw-main awe-content">
-          <div className="awe-exercise-label">Exercise 04 · Recursion</div>
-          <div className="awe-task">Write a recursive factorial function in Python.</div>
+        <div className="awedu-exercise-label">Exercise 04 · Recursion</div>
+        <div className="awedu-task">Write a recursive factorial function in Python.</div>
 
-          <pre className="awe-code">
+        <pre className="awedu-code">
 {`def factorial(n):
     if n <= 1:
         return 1
     return n * factorial(n - 1)`}
-          </pre>
+        </pre>
 
-          <div className="awe-tests">
-            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(0) == 1</div>
-            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(5) == 120</div>
-            <div className="awe-test awe-pass"><span className="awe-icon">✓</span> factorial(1) == 1</div>
-            <div className="awe-test awe-fail"><span className="awe-icon">✗</span> handles negative input</div>
+        {/* Horizontal test row */}
+        <div className="awedu-tests-row">
+          <div className="awedu-test awedu-pass">
+            <span className="awedu-icon">✓</span>
+            <span>f(0)==1</span>
           </div>
+          <div className="awedu-test awedu-pass">
+            <span className="awedu-icon">✓</span>
+            <span>f(5)==120</span>
+          </div>
+          <div className="awedu-test awedu-pass">
+            <span className="awedu-icon">✓</span>
+            <span>f(1)==1</span>
+          </div>
+          <div className="awedu-test awedu-fail">
+            <span className="awedu-icon">✗</span>
+            <span>negative</span>
+          </div>
+        </div>
 
-          <div className="awe-feedback">
-            Feedback: add a guard for <code>n {"<"} 0</code> to handle edge cases.
-          </div>
+        <div className="awedu-feedback">
+          add a guard for <code>n {"<"} 0</code> to handle edge cases.
         </div>
       </div>
     </div>
@@ -714,69 +687,72 @@ function RugbyPreview() {
         </div>
       </div>
 
-      <div className="aw-body aw-split">
-        <div className="aw-sidebar">
-          <div className="aws-brand">RugbyMate</div>
-          <div className="aws-section">Views</div>
-          <div className="aws-nav-item aws-nav-active"><span>◈</span> Fixtures</div>
-          <div className="aws-nav-item"><span>◉</span> Bracket</div>
-          <div className="aws-nav-item"><span>◫</span> Teams</div>
-          <div className="aws-nav-item"><span>◧</span> Schedule</div>
-          <div className="aws-divider" />
-          <div className="aws-section">Today</div>
-          <div className="aws-stat"><span>Matches</span><strong>8</strong></div>
-          <div className="aws-stat"><span>Fields</span><strong>2</strong></div>
-          <div className="aws-stat"><span>Teams</span><strong>12</strong></div>
+      {/* Tournament header — full-width, no sidebar */}
+      <div className="awrug-header">
+        <div className="awrug-header-main">
+          <span className="awrug-title">Saturday · Pool Stage</span>
+          <div className="awrug-stats-row">
+            <span>8 matches</span>
+            <span className="awrug-sep">·</span>
+            <span>2 fields</span>
+            <span className="awrug-sep">·</span>
+            <span>12 teams</span>
+          </div>
+        </div>
+        <div className="awrug-progress">
+          <div className="awrug-progress-fill" style={{ width: "50%" }} />
+        </div>
+      </div>
+
+      {/* Full-width scoreboard rows */}
+      <div className="aw-body awrug-board">
+        <div className="awrug-match awrug-match-live">
+          <div className="awrug-live-stripe" />
+          <div className="awrug-match-inner">
+            <div className="awrug-field">Field A · 09:00</div>
+            <div className="awrug-teams">
+              <span className="awrug-team">Grey</span>
+              <span className="awrug-score awrug-score-live">21 — 17</span>
+              <span className="awrug-team">Framesby</span>
+            </div>
+          </div>
+          <span className="awrug-status awrug-ft">FT</span>
         </div>
 
-        <div className="aw-main awr-fixtures">
-          {/* Day label */}
-          <div className="awr-day-header">
-            <div className="awr-day-label">Saturday · Pool Stage</div>
-            <div className="awr-day-progress">
-              <div className="awr-day-fill" style={{ width: "50%" }} />
+        <div className="awrug-match">
+          <div className="awrug-match-inner">
+            <div className="awrug-field">Field B · 09:40</div>
+            <div className="awrug-teams">
+              <span className="awrug-team">Pearson</span>
+              <span className="awrug-score">— vs —</span>
+              <span className="awrug-team">Hudson Park</span>
             </div>
           </div>
+          <span className="awrug-status">KO</span>
+        </div>
 
-          <div className="awr-match awr-match-live">
-            <div className="awr-kick">Field A · 09:00</div>
-            <div className="awr-teams">
-              <span className="awr-team">Grey</span>
-              <span className="awr-score awr-score-live">21 — 17</span>
-              <span className="awr-team">Framesby</span>
+        <div className="awrug-match awrug-match-next">
+          <div className="awrug-match-inner">
+            <div className="awrug-field">Field A · 10:20</div>
+            <div className="awrug-teams">
+              <span className="awrug-team">Selborne</span>
+              <span className="awrug-score">— vs —</span>
+              <span className="awrug-team">Dale</span>
             </div>
-            <span className="awr-status awr-live">FT</span>
           </div>
+          <span className="awrug-status awrug-next-badge">Next</span>
+        </div>
 
-          <div className="awr-match">
-            <div className="awr-kick">Field B · 09:40</div>
-            <div className="awr-teams">
-              <span className="awr-team">Pearson</span>
-              <span className="awr-score">— vs —</span>
-              <span className="awr-team">Hudson Park</span>
+        <div className="awrug-match">
+          <div className="awrug-match-inner">
+            <div className="awrug-field">Field B · 11:00</div>
+            <div className="awrug-teams">
+              <span className="awrug-team">Graeme</span>
+              <span className="awrug-score">— vs —</span>
+              <span className="awrug-team">Queens</span>
             </div>
-            <span className="awr-status">KO</span>
           </div>
-
-          <div className="awr-match awr-match-upcoming">
-            <div className="awr-kick">Field A · 10:20</div>
-            <div className="awr-teams">
-              <span className="awr-team">Selborne</span>
-              <span className="awr-score">— vs —</span>
-              <span className="awr-team">Dale</span>
-            </div>
-            <span className="awr-status awr-upcoming">Next</span>
-          </div>
-
-          <div className="awr-match">
-            <div className="awr-kick">Field B · 11:00</div>
-            <div className="awr-teams">
-              <span className="awr-team">Graeme</span>
-              <span className="awr-score">— vs —</span>
-              <span className="awr-team">Queens</span>
-            </div>
-            <span className="awr-status">TBD</span>
-          </div>
+          <span className="awrug-status">TBD</span>
         </div>
       </div>
     </div>
@@ -788,62 +764,54 @@ function PerfPreview() {
     <div className="aw aw-perf" aria-hidden="true">
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">GameOpt</span>
+        <span className="aw-title">GameOpt · Gaming profile</span>
         <div className="aw-chrome-right">
           <span className="aw-badge aw-badge-green">● Stable</span>
         </div>
       </div>
 
-      <div className="aw-body aw-split">
-        <div className="aw-sidebar">
-          <div className="aws-section">Profiles</div>
-          <div className="aws-nav-item aws-nav-active"><span>◈</span> Gaming</div>
-          <div className="aws-nav-item"><span>◉</span> Desktop</div>
-          <div className="aws-nav-item"><span>◫</span> Low-latency</div>
-          <div className="aws-divider" />
-          <div className="aws-section">System</div>
-          <div className="aws-stat"><span>Kernel</span><strong>6.8 tuned</strong></div>
-          <div className="aws-stat"><span>CPU gov</span><strong>performance</strong></div>
-          <div className="aws-stat"><span>IRQ</span><strong>pinned</strong></div>
+      {/* Metrics strip — full-width, no sidebar */}
+      <div className="awperf-metrics-strip">
+        <div className="awperf-metric awperf-highlight">
+          <span className="awperf-label">Input latency</span>
+          <span className="awperf-value awperf-green">6.8 ms</span>
+        </div>
+        <div className="awperf-metric-divider" />
+        <div className="awperf-metric">
+          <span className="awperf-label">FPS avg</span>
+          <span className="awperf-value">214</span>
+        </div>
+        <div className="awperf-metric-divider" />
+        <div className="awperf-metric awperf-warn">
+          <span className="awperf-label">1% low</span>
+          <span className="awperf-value awperf-amber">142</span>
+        </div>
+        <div className="awperf-metric-divider" />
+        <div className="awperf-metric">
+          <span className="awperf-label">CPU gov</span>
+          <span className="awperf-value awperf-small">performance</span>
+        </div>
+      </div>
+
+      {/* Hero chart body */}
+      <div className="aw-body awperf-body">
+        <div className="awperf-chart-area">
+          <div className="awperf-chart-label">Frame time (ms)</div>
+          <div className="awperf-bars">
+            {[4.2,3.8,4.6,3.9,4.1,5.2,3.7,4.4,3.6,4.8,3.9,4.2,3.8,4.5,3.7,4.1].map((h,i)=>(
+              <div key={i} className={`awperf-bar${h > 5 ? " awperf-bar-spike" : ""}`} style={{ height: `${h * 13}%` }} />
+            ))}
+          </div>
         </div>
 
-        <div className="aw-main awp-lab">
-          {/* Metric cards */}
-          <div className="awpl-metric-row">
-            <div className="awpl-metric awpl-metric-highlight">
-              <div className="awpl-label">Input latency</div>
-              <div className="awpl-value awpl-green">6.8 ms</div>
-            </div>
-            <div className="awpl-metric">
-              <div className="awpl-label">FPS avg</div>
-              <div className="awpl-value">214</div>
-            </div>
-            <div className="awpl-metric awpl-metric-warn">
-              <div className="awpl-label">1% low</div>
-              <div className="awpl-value awpl-amber">142</div>
-            </div>
-          </div>
-
-          {/* Frame-time chart */}
-          <div className="awpl-chart">
-            <div className="awpl-chart-label">Frame time (ms)</div>
-            <div className="awpl-bars">
-              {[4.2,3.8,4.6,3.9,4.1,5.2,3.7,4.4,3.6,4.8,3.9,4.2].map((h,i)=>(
-                <div key={i} className={`awpl-bar${h > 5 ? " awpl-bar-spike" : ""}`} style={{ height: `${h * 11}%` }} />
-              ))}
-            </div>
-          </div>
-
-          {/* Active tweaks */}
-          <div className="awpl-config">
-            <div className="awpl-config-label">Active tweaks</div>
-            <div className="awpl-tags-row">
-              <div className="awpl-tag">isolcpus=0-3</div>
-              <div className="awpl-tag">rcu_nocbs</div>
-              <div className="awpl-tag">mitigations=off</div>
-              <div className="awpl-tag">threadirq</div>
-              <div className="awpl-tag awpl-tag-accent">PREEMPT_RT</div>
-            </div>
+        <div className="awperf-config-row">
+          <span className="awperf-config-label">Active tweaks</span>
+          <div className="awperf-tags">
+            <span className="awperf-tag">isolcpus=0-3</span>
+            <span className="awperf-tag">rcu_nocbs</span>
+            <span className="awperf-tag">mitigations=off</span>
+            <span className="awperf-tag">threadirq</span>
+            <span className="awperf-tag awperf-tag-accent">PREEMPT_RT</span>
           </div>
         </div>
       </div>

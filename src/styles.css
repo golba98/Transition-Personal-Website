@@ -3370,3 +3370,627 @@ a {
     animation: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   DISTINCT PREVIEW LAYOUTS — sections 1–7
+   ═══════════════════════════════════════════════════ */
+
+/* ── 01 SynchroEdit — Document Canvas ── */
+.awd-canvas {
+  display: block;
+  padding: 1rem 1.75rem 0.75rem;
+  overflow: hidden;
+  gap: 0;
+}
+
+.awd-canvas .awd-ruler {
+  margin-bottom: 0.55rem;
+}
+
+.awd-canvas .awd-h1 {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.awd-canvas .awd-h2 {
+  margin-top: 0.6rem;
+  margin-bottom: 0.2rem;
+}
+
+.awd-canvas .awd-p {
+  line-height: 1.6;
+  margin-bottom: 0.08rem;
+}
+
+.awd-canvas .awd-activity {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  flex-shrink: 0;
+}
+
+/* ── 02 TryPOS Suite — POS Terminal ── */
+.awpos-kpi-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 0.75rem;
+  min-height: 2.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.18);
+  flex-shrink: 0;
+}
+
+.awpos-kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0.75rem;
+  flex: 1;
+}
+
+.awpos-kpi-label {
+  font-size: 0.5rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.awpos-kpi-value {
+  font-size: 0.85rem;
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.awpos-green { color: #7ab88a; }
+.awpos-amber { color: #c7a46f; }
+
+.awpos-kpi-divider {
+  width: 1px;
+  height: 1.6rem;
+  background: rgba(255,255,255,0.09);
+  flex-shrink: 0;
+}
+
+.awpos-terminal {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+
+.awpos-cart {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  gap: 0;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.awpos-cart-head {
+  display: grid;
+  grid-template-columns: 1fr 2.5rem 4rem;
+  gap: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  margin-bottom: 0.3rem;
+  font-size: 0.52rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.awpos-cart-item {
+  display: grid;
+  grid-template-columns: 1fr 2.5rem 4rem;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.62rem;
+  color: var(--muted);
+  align-items: center;
+}
+
+.awpos-cart-item span:first-child { color: rgba(232,229,223,0.8); }
+.awpos-cart-item span:last-child { color: var(--ink); text-align: right; }
+.awpos-cart-item span:nth-child(2) { color: var(--dim); text-align: center; }
+
+.awpos-cart-item-highlight {
+  background: rgba(95,147,111,0.06);
+  border-radius: 0.04rem;
+  padding-left: 0.3rem;
+  border-left: 2px solid rgba(95,147,111,0.45);
+}
+
+.awpos-cart-spacer { flex: 1; }
+
+.awpos-sub-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.58rem;
+  color: var(--dim);
+  padding: 0.2rem 0;
+}
+
+.awpos-totals-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 42%;
+  min-width: 42%;
+  padding: 0.75rem;
+  gap: 0.4rem;
+  background: rgba(0,0,0,0.22);
+}
+
+.awpos-total-label {
+  font-size: 0.52rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.awpos-total-hero {
+  font-size: 1.45rem;
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.awpos-total-meta {
+  font-size: 0.52rem;
+  color: var(--dim);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.awpos-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.awpos-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.7rem;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0.06rem;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font: 400 0.58rem / 1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  cursor: default;
+}
+
+.awpos-btn-primary {
+  border-color: rgba(95,147,111,0.5);
+  background: rgba(95,147,111,0.12);
+  color: #7ab88a;
+}
+
+/* ── 03 Codexa — Full-width Terminal ── */
+.awt-full-term {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem;
+  gap: 0.65rem;
+  overflow: hidden;
+}
+
+.awt-full-term .awt-code-block pre {
+  font-size: 0.58rem;
+  line-height: 1.48;
+}
+
+.awt-full-term .awt-composer {
+  margin-top: auto;
+}
+
+/* ── 04 EduTool — Challenge Card ── */
+.awedu-challenge {
+  display: flex;
+  flex-direction: column;
+  padding: 0.7rem 0.9rem;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.awedu-progress-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+.awedu-prog-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.awedu-prog-label {
+  font-size: 0.5rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  width: 2rem;
+}
+
+.awedu-prog-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.awedu-prog-bar div {
+  height: 100%;
+  background: var(--muted);
+  border-radius: 999px;
+}
+
+.awedu-prog-bar-active div { background: var(--accent); }
+
+.awedu-prog-active .awedu-prog-label { color: var(--accent); }
+
+.awedu-exercise-label {
+  font-size: 0.54rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  flex-shrink: 0;
+}
+
+.awedu-task {
+  font-size: 0.7rem;
+  color: var(--ink);
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+.awedu-code {
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  background: rgba(0,0,0,0.3);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 0.06rem 0.06rem 0;
+  font: 400 0.63rem / 1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: rgba(232,229,223,0.85);
+  white-space: pre;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.awedu-tests-row {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.awedu-test {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.22rem 0.45rem;
+  border-radius: 0.06rem;
+  font-size: 0.58rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.awedu-pass { background: rgba(95,147,111,0.1); border: 1px solid rgba(95,147,111,0.22); color: rgba(232,229,223,0.8); }
+.awedu-fail { background: rgba(199,80,80,0.08); border: 1px solid rgba(199,80,80,0.22); color: rgba(232,229,223,0.7); }
+
+.awedu-icon { font-size: 0.7rem; }
+.awedu-pass .awedu-icon { color: var(--accent); }
+.awedu-fail .awedu-icon { color: #c76060; }
+
+.awedu-feedback {
+  font-size: 0.6rem;
+  color: var(--muted);
+  line-height: 1.55;
+  border-left: 2px solid rgba(199,164,111,0.4);
+  padding-left: 0.55rem;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.awedu-feedback code {
+  background: rgba(199,164,111,0.12);
+  padding: 0 0.25rem;
+  border-radius: 0.04rem;
+  color: #c7a46f;
+}
+
+/* ── 06 RugbyMate — Scoreboard ── */
+.awrug-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem 0.45rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.18);
+  flex-shrink: 0;
+}
+
+.awrug-header-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.awrug-title {
+  font-size: 0.72rem;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.awrug-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.56rem;
+  color: var(--dim);
+}
+
+.awrug-sep { color: rgba(255,255,255,0.15); }
+
+.awrug-progress {
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.awrug-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c7a46f, rgba(199,164,111,0.3));
+  border-radius: 999px;
+}
+
+.awrug-board {
+  display: flex;
+  flex-direction: column;
+  padding: 0.55rem 0.75rem;
+  gap: 0.4rem;
+  overflow: hidden;
+}
+
+.awrug-match {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 0.07rem;
+  background: rgba(255,255,255,0.018);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.awrug-match-live {
+  border-color: rgba(199,164,111,0.3);
+  background: rgba(199,164,111,0.05);
+}
+
+.awrug-match-next {
+  border-color: rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.03);
+}
+
+.awrug-live-stripe {
+  width: 3px;
+  align-self: stretch;
+  background: #c7a46f;
+  flex-shrink: 0;
+}
+
+.awrug-match-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  flex: 1;
+  padding: 0.38rem 0.6rem;
+}
+
+.awrug-field {
+  font-size: 0.52rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.awrug-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--ink);
+}
+
+.awrug-team { flex: 1; }
+.awrug-team:last-child { text-align: right; }
+
+.awrug-score {
+  color: var(--muted);
+  font-size: 0.6rem;
+  text-align: center;
+  flex: 0 0 4.5rem;
+}
+
+.awrug-score-live { color: var(--ink); font-weight: 500; }
+
+.awrug-status {
+  font-size: 0.5rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.14rem 0.5rem 0.14rem 0.4rem;
+  border-left: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+  min-width: 2.8rem;
+  text-align: center;
+}
+
+.awrug-ft {
+  color: #c7a46f;
+}
+
+.awrug-next-badge {
+  color: rgba(232,229,223,0.7);
+}
+
+/* ── 07 GameOpt — Performance Monitor ── */
+.awperf-metrics-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 0.75rem;
+  min-height: 2.7rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.18);
+  flex-shrink: 0;
+}
+
+.awperf-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0.75rem;
+  flex: 1;
+}
+
+.awperf-metric-divider {
+  width: 1px;
+  height: 1.6rem;
+  background: rgba(255,255,255,0.09);
+  flex-shrink: 0;
+}
+
+.awperf-label {
+  font-size: 0.5rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.awperf-value {
+  font-size: 0.88rem;
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.awperf-small { font-size: 0.62rem; margin-top: 0.1rem; }
+.awperf-green { color: #7ab88a; }
+.awperf-amber { color: #c7a46f; }
+.awperf-highlight { background: rgba(95,147,111,0.06); border-radius: 0.06rem; }
+.awperf-warn .awperf-value { color: #c7a46f; }
+
+.awperf-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.65rem 0.85rem 0.55rem;
+  gap: 0.55rem;
+  overflow: hidden;
+}
+
+.awperf-chart-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 0.07rem;
+  padding: 0.5rem 0.65rem;
+  background: rgba(0,0,0,0.2);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.awperf-chart-label {
+  font-size: 0.54rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.awperf-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.2rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.awperf-bar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--accent), rgba(95,147,111,0.25));
+  border-radius: 0.04rem 0.04rem 0 0;
+  animation: perf-pulse 2.4s ease-in-out infinite alternate;
+  min-height: 3px;
+}
+
+.awperf-bar:nth-child(2n) { animation-delay: 0.3s; }
+.awperf-bar:nth-child(3n) { animation-delay: 0.6s; }
+
+.awperf-bar-spike {
+  background: linear-gradient(180deg, #c7a46f, rgba(199,164,111,0.3));
+}
+
+.awperf-config-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-shrink: 0;
+}
+
+.awperf-config-label {
+  font-size: 0.5rem;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.awperf-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+}
+
+.awperf-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.4rem;
+  border: 1px solid rgba(95,147,111,0.3);
+  border-radius: 0.06rem;
+  background: rgba(95,147,111,0.07);
+  color: var(--accent);
+  font-size: 0.54rem;
+}
+
+.awperf-tag-accent {
+  border-color: rgba(95,147,111,0.55);
+  background: rgba(95,147,111,0.14);
+  color: #7ab88a;
+  font-weight: 500;
+}
