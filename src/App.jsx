@@ -143,51 +143,92 @@ const profile = {
   availability: "Seeking internship opportunities",
   education: "University of London BSc Computer Science",
   email: "jordanvorster404@gmail.com",
-  githubUsername: "golba98",
-  githubUrl: "https://github.com/golba98",
   resumeUrl: "/Resume.pdf",
 };
 
-const featuredRepoNames = [
-  "SynchroEdit",
-  "Game_Development",
-  "Codexa",
-  "hp-prime-ppl-python",
-  "Personal-Website",
-];
+const DEFAULT_GITHUB_USERNAME = "golba98";
+const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME?.trim() || DEFAULT_GITHUB_USERNAME;
+const GITHUB_PROFILE_FALLBACK = `https://github.com/${GITHUB_USERNAME}`;
+const REPO_CARD_LIMIT = 6;
 
-const repoDisplayCopy = {
-  SynchroEdit: {
-    description:
-      "A Google-Docs-style editor where two or more people type into the same file at the same time. Built to understand how real-time sync actually holds up under concurrent edits.",
-    tags: ["JavaScript", "Realtime Sync", "Collaborative Editing"],
-    status: "Pinned",
-  },
-  Game_Development: {
-    description:
-      "Game prototypes and experiments — mostly to see what's possible with JavaScript before reaching for a full engine.",
-    tags: ["JavaScript", "Game UI", "Prototyping"],
-    status: "Interactive",
-  },
-  Codexa: {
-    description:
-      "A terminal-native skin for Codex — chatting with ChatGPT from the CLI, but with the typography, colour, and rhythm of a modern UI.",
-    tags: ["TypeScript", "Terminal UI", "Developer Experience"],
-    status: "Active",
-  },
-  "hp-prime-ppl-python": {
-    description:
-      "Scripting for the HP Prime and related Python utilities — base conversion, menu-driven helpers, and small calculator tools.",
-    tags: ["Python", "HP Prime", "Tooling"],
-    status: "Utility",
-  },
-  "Personal-Website": {
-    description:
-      "This site. Built with React, Vite, and GSAP — updated as the portfolio grows.",
-    tags: ["TypeScript", "Portfolio", "React"],
-    status: "Portfolio",
-  },
-};
+function formatCount(value) {
+  return new Intl.NumberFormat("en", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+function formatRepoDate(value) {
+  if (!value) return "Recently updated";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Recently updated";
+
+  return `Updated ${new Intl.DateTimeFormat("en", {
+    month: "short",
+    year: "numeric",
+  }).format(date)}`;
+}
+
+function normalizeGithubProfile(user) {
+  return {
+    login: user.login || GITHUB_USERNAME,
+    name: user.name || "",
+    bio: user.bio || "",
+    url: user.html_url || user.url || GITHUB_PROFILE_FALLBACK,
+    avatarUrl: user.avatar_url || user.avatarUrl || "",
+    publicRepos: user.public_repos ?? user.publicRepos ?? 0,
+    followers: user.followers ?? 0,
+    following: user.following ?? 0,
+    location: user.location || "",
+  };
+}
+
+function normalizeGithubRepo(repo, isPinned = false) {
+  return {
+    name: repo.name,
+    url: repo.html_url || repo.url,
+    description: repo.description || "",
+    language: repo.language || "",
+    topics: Array.isArray(repo.topics) ? repo.topics : [],
+    stars: repo.stargazers_count ?? repo.stars ?? 0,
+    forks: repo.forks_count ?? repo.forks ?? 0,
+    watchers: repo.watchers_count ?? repo.watchers ?? 0,
+    updatedAt: repo.updated_at || repo.updatedAt || "",
+    pushedAt: repo.pushed_at || repo.pushedAt || "",
+    homepage: repo.homepage || "",
+    archived: Boolean(repo.archived),
+    fork: Boolean(repo.fork),
+    isPinned: Boolean(repo.isPinned || isPinned),
+  };
+}
+
+async function fetchGithubRestFallback(signal) {
+  const [profileResponse, reposResponse] = await Promise.all([
+    fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+      signal,
+      headers: { Accept: "application/vnd.github+json" },
+    }),
+    fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`, {
+      signal,
+      headers: { Accept: "application/vnd.github+json" },
+    }),
+  ]);
+
+  if (!profileResponse.ok || !reposResponse.ok) {
+    throw new Error("GitHub REST fallback failed");
+  }
+
+  const [profileData, repoData] = await Promise.all([profileResponse.json(), reposResponse.json()]);
+
+  return {
+    profile: normalizeGithubProfile(profileData),
+    repos: Array.isArray(repoData)
+      ? repoData.filter((repo) => !repo.fork).slice(0, REPO_CARD_LIMIT).map((repo) => normalizeGithubRepo(repo))
+      : [],
+    source: "client-rest",
+  };
+}
 
 function MagneticLink({ href, children }) {
   const ref = useRef(null);
@@ -957,7 +998,11 @@ function App() {
   const workRef = useRef(null);
   const activeProjectRef = useRef(0);
   const [activeProject, setActiveProject] = useState(0);
-  const [githubRepos, setGithubRepos] = useState([]);
+  const [githubData, setGithubData] = useState({
+    profile: null,
+    repos: [],
+    source: "",
+  });
   const [githubLoading, setGithubLoading] = useState(true);
   const [githubError, setGithubError] = useState("");
 
@@ -973,63 +1018,92 @@ function App() {
     [],
   );
 
-  const publicProjects = useMemo(() => {
-    const reposByName = new Map(githubRepos.map((repo) => [repo.name.toLowerCase(), repo]));
+  const githubProfile = githubData.profile ?? {
+    login: GITHUB_USERNAME,
+    name: "",
+    bio: "",
+    url: GITHUB_PROFILE_FALLBACK,
+    publicRepos: 0,
+    followers: 0,
+    following: 0,
+  };
+  const githubProfileUrl = githubProfile.url || GITHUB_PROFILE_FALLBACK;
+  const githubSourceLabel =
+    githubData.source === "graphql-pinned" ? "Pinned repositories" : "Recent public repositories";
+  const githubIntro =
+    githubData.source === "graphql-pinned"
+      ? `Showing the repositories pinned on @${githubProfile.login}'s GitHub profile.`
+      : `Showing recently updated public repositories from @${githubProfile.login}.`;
 
-    return featuredRepoNames
-      .map((repoName, index) => {
-        const repo = reposByName.get(repoName.toLowerCase());
-        if (!repo) return null;
-
-        const display = repoDisplayCopy[repoName] ?? {};
-        const tags = display.tags?.length ? display.tags : [repo.language].filter(Boolean);
+  const publicProjects = useMemo(
+    () =>
+      githubData.repos.slice(0, REPO_CARD_LIMIT).map((repo, index) => {
+        const tags = [...new Set([...(repo.topics || []), repo.language].filter(Boolean))].slice(0, 3);
+        const description =
+          repo.description ||
+          (repo.homepage
+            ? `Public repository connected to ${repo.homepage}.`
+            : `${repo.language || "Public"} repository synced from GitHub.`);
+        const status = repo.archived ? "Archived" : repo.fork ? "Fork" : repo.isPinned ? "Pinned" : "Updated";
 
         return {
           id: String(index + 1).padStart(2, "0"),
           name: repo.name,
-          url: repo.html_url,
-          description:
-            display.description ||
-            repo.description ||
-            "A public repository from the current GitHub workspace.",
-          tags,
-          status: display.status || "Public",
+          url: repo.url,
+          description,
+          tags: tags.length ? tags : ["GitHub"],
+          status,
           language: repo.language,
+          stats: `${formatCount(repo.stars)} stars / ${formatCount(repo.forks)} forks`,
+          updated: formatRepoDate(repo.pushedAt || repo.updatedAt),
         };
-      })
-      .filter(Boolean);
-  }, [githubRepos]);
+      }),
+    [githubData.repos],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
 
-    const loadGithubRepos = async () => {
+    const loadGithubData = async () => {
       try {
         setGithubLoading(true);
         setGithubError("");
 
         const response = await fetch(
-          `https://api.github.com/users/${profile.githubUsername}/repos?per_page=100&sort=updated`,
+          `/api/github?username=${encodeURIComponent(GITHUB_USERNAME)}`,
           {
             signal: controller.signal,
             headers: {
-              Accept: "application/vnd.github+json",
+              Accept: "application/json",
             },
           },
         );
 
         if (!response.ok) {
-          throw new Error(`GitHub request failed with ${response.status}`);
+          throw new Error(`Portfolio GitHub endpoint failed with ${response.status}`);
         }
 
-        const repos = await response.json();
+        const payload = await response.json();
         if (!controller.signal.aborted) {
-          setGithubRepos(Array.isArray(repos) ? repos : []);
+          setGithubData({
+            profile: payload.profile ? normalizeGithubProfile(payload.profile) : null,
+            repos: Array.isArray(payload.repos) ? payload.repos.map((repo) => normalizeGithubRepo(repo)) : [],
+            source: payload.source || "server",
+          });
         }
       } catch (error) {
-        if (error.name !== "AbortError") {
-          setGithubError("GitHub metadata is temporarily unavailable.");
-          setGithubRepos([]);
+        if (error.name === "AbortError") return;
+
+        try {
+          const fallback = await fetchGithubRestFallback(controller.signal);
+          if (!controller.signal.aborted) {
+            setGithubData(fallback);
+          }
+        } catch (fallbackError) {
+          if (fallbackError.name !== "AbortError") {
+            setGithubError("GitHub metadata is temporarily unavailable.");
+            setGithubData({ profile: null, repos: [], source: "" });
+          }
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -1038,14 +1112,14 @@ function App() {
       }
     };
 
-    loadGithubRepos();
+    loadGithubData();
 
     return () => controller.abort();
   }, []);
 
   useEffect(() => {
     ScrollTrigger.refresh();
-  }, [githubLoading, githubRepos]);
+  }, [githubLoading, githubData.repos]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -1306,7 +1380,7 @@ function App() {
             Download CV
           </a>
           <a href={`mailto:${profile.email}`}>Contact Jordan</a>
-          <a href={profile.githubUrl} target="_blank" rel="noreferrer">
+          <a href={githubProfileUrl} target="_blank" rel="noreferrer">
             GitHub
           </a>
         </div>
@@ -1389,19 +1463,51 @@ function App() {
               <span>Some of my public work, pulled live from GitHub.</span>
             </h2>
           </div>
-          <p className="github-intro fade-rise">
-            These cover most of the areas I've been working in — tools, games, AI
-            experiments, and this site itself. All pulled directly from my GitHub profile.
-          </p>
+          <div className="github-profile-panel fade-rise">
+            <p className="github-intro">
+              <span className="github-profile-line">
+                {githubLoading ? "Syncing GitHub profile" : `${githubProfile.name || githubProfile.login} / @${githubProfile.login}`}
+              </span>
+              <span>{githubProfile.bio || githubIntro}</span>
+            </p>
+            <div className="github-stats" aria-label="GitHub profile stats">
+              <span>{formatCount(githubProfile.publicRepos)} repos</span>
+              <span>{formatCount(githubProfile.followers)} followers</span>
+              <span>{githubSourceLabel}</span>
+            </div>
+          </div>
         </div>
 
         <div className="repo-showcase fade-rise" aria-live="polite">
-          {githubLoading && <div className="repo-message">Loading public repositories...</div>}
+          {githubLoading &&
+            Array.from({ length: 3 }, (_, index) => (
+              <div className="repo-card repo-card-skeleton" key={`repo-skeleton-${index}`} aria-hidden="true">
+                <div className="repo-card-header">
+                  <span />
+                  <span />
+                </div>
+                <div className="repo-card-body">
+                  <span />
+                  <span />
+                </div>
+                <div>
+                  <div className="repo-tags">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <div className="repo-card-footer">
+                    <span />
+                    <span />
+                  </div>
+                </div>
+              </div>
+            ))}
 
           {!githubLoading && githubError && (
             <div className="repo-message">
               <span>{githubError}</span>
-              <a href={profile.githubUrl} target="_blank" rel="noreferrer">
+              <a href={githubProfileUrl} target="_blank" rel="noreferrer">
                 View all on GitHub
               </a>
             </div>
@@ -1434,6 +1540,8 @@ function App() {
                   </div>
                   <div className="repo-card-footer">
                     <span>{repo.language || "Repository"}</span>
+                    <span>{repo.stats}</span>
+                    <span>{repo.updated}</span>
                     <span className="repo-arrow" aria-hidden="true">
                       -&gt;
                     </span>
@@ -1444,8 +1552,8 @@ function App() {
 
           {!githubLoading && !githubError && publicProjects.length === 0 && (
             <div className="repo-message">
-              <span>Featured repositories are syncing from GitHub.</span>
-              <a href={profile.githubUrl} target="_blank" rel="noreferrer">
+              <span>No public repositories are available from GitHub right now.</span>
+              <a href={githubProfileUrl} target="_blank" rel="noreferrer">
                 View all on GitHub
               </a>
             </div>
@@ -1453,7 +1561,7 @@ function App() {
         </div>
 
         <div className="github-footer fade-rise">
-          <a className="github-profile-link" href={profile.githubUrl} target="_blank" rel="noreferrer">
+          <a className="github-profile-link" href={githubProfileUrl} target="_blank" rel="noreferrer">
             View all on GitHub
             <span aria-hidden="true">-&gt;</span>
           </a>
@@ -1540,7 +1648,7 @@ function App() {
           </p>
           <div className="contact-actions fade-rise">
             <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            <a href={profile.githubUrl} target="_blank" rel="noreferrer">
+            <a href={githubProfileUrl} target="_blank" rel="noreferrer">
               GitHub
             </a>
             <a href={profile.resumeUrl} download>
