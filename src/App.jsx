@@ -369,62 +369,59 @@ function ProjectVisual({ project, active }) {
 
 function EditorPreview() {
   return (
-    <div className="aw aw-editor" aria-hidden="true">
-      {/* Chrome bar — collab presence lives here */}
-      <div className="aw-chrome">
-        <div className="aw-dots"><i /><i /><i /></div>
-        <div className="aw-tab">
-          <span className="aw-tab-dot aw-tab-dot-a" />
-          project-notes.md
+    <div className="aw aw-editor app-editor" aria-hidden="true">
+      {/* Notion-style toolbar */}
+      <div className="ed-toolbar">
+        <div className="ed-toolbar-left">
+          <div className="ed-breadcrumb">
+            <span className="ed-bc-icon">📄</span>
+            <span className="ed-bc-sep">/</span>
+            <span>Workspace</span>
+            <span className="ed-bc-sep">/</span>
+            <span className="ed-bc-active">project-notes</span>
+          </div>
         </div>
-        <div className="aw-tab">
-          <span className="aw-tab-dot aw-tab-dot-b" />
-          design-brief.md
-        </div>
-        <div className="aw-chrome-right">
-          <span className="aw-badge aw-badge-cyan">● Jordan</span>
-          <span className="aw-badge aw-badge-amber">● Mia</span>
-          <span className="aw-meta">2 live</span>
+        <div className="ed-toolbar-right">
+          <div className="ed-avatars">
+            <span className="ed-avatar ed-avatar-j">J</span>
+            <span className="ed-avatar ed-avatar-m">M</span>
+          </div>
+          <button className="ed-share-btn">Share</button>
+          <span className="ed-saved">✓ Saved</span>
         </div>
       </div>
 
-      {/* Full-width document canvas — no sidebar */}
-      <div className="aw-body awd-canvas">
-        <div className="awd-ruler">1&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;7</div>
-        <div className="awd-h1">Introduction<span className="awd-caret awd-caret-a" /></div>
-        <div className="awd-p">This document outlines the real-time collaboration</div>
-        <div className="awd-p">approach used in SynchroEdit. Two or more users can</div>
-        <div className="awd-p">type in the same file simultaneously — edits are merged</div>
-        <div className="awd-p awd-selected">on every keystroke using operational transforms.<span className="awd-caret awd-caret-b" /></div>
-        <div className="awd-br" />
-        <div className="awd-h2">Problem statement</div>
-        <div className="awd-p awd-muted">Classic conflict: two users change the same line at</div>
-        <div className="awd-p awd-muted">the same time. Who wins? OT resolves this by tracking</div>
-        <div className="awd-p awd-muted">intent, not just position.</div>
-        <div className="awd-br" />
-        <div className="awd-h2">Design decisions</div>
-        <div className="awd-p awd-muted">Operational transforms preserve each user's intent</div>
-        <div className="awd-p awd-muted">even under concurrent edits at the same offset.</div>
-        <div className="awd-activity">
-          <div className="awd-activity-item">
-            <span className="awd-act-dot awd-act-dot-cyan" />
-            Jordan inserted 3 chars at L14
+      {/* Document canvas */}
+      <div className="aw-body ed-canvas">
+        <div className="ed-page">
+          <h1 className="ed-title">Real-time Collaboration<span className="awd-caret awd-caret-a" /></h1>
+          <p className="ed-subtitle">How SynchroEdit keeps documents in sync across users</p>
+          <div className="ed-divider" />
+          <p className="ed-body-text">This document outlines the approach used in SynchroEdit. Two or more users can type in the same file simultaneously — edits are merged on every keystroke using operational transforms.</p>
+          <p className="ed-body-text awd-selected">Classic conflict: two users change the same line at the same time. Who wins?<span className="awd-caret awd-caret-b" /></p>
+          <div className="ed-callout">
+            <span className="ed-callout-icon">💡</span>
+            <span>OT resolves conflicts by tracking <em>intent</em>, not just cursor position.</span>
           </div>
-          <div className="awd-activity-item">
-            <span className="awd-act-dot awd-act-dot-amber" />
-            Mia selected paragraph 2
+          <h2 className="ed-h2">Design decisions</h2>
+          <p className="ed-body-text ed-muted">Operational transforms preserve each user's intent even under concurrent edits at the same offset.</p>
+          <div className="ed-collab-footer">
+            <div className="ed-collab-item">
+              <span className="ed-collab-dot ed-dot-j" />
+              Jordan editing · Line 14
+            </div>
+            <div className="ed-collab-item">
+              <span className="ed-collab-dot ed-dot-m" />
+              Mia viewing · Paragraph 2
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Status bar */}
-      <div className="aw-statusbar">
-        <span>Ln 14, Col 38</span>
-        <span>UTF-8</span>
-        <span className="aws-sync">⟳ Synced</span>
-        <span className="aws-dot-sep" />
-        <span className="aws-users-live">2 users connected</span>
-        <span className="aws-latency">12ms</span>
+      {/* Minimal status */}
+      <div className="ed-status">
+        <span>1,247 words</span>
+        <span className="ed-status-sync">⟳ Synced · 12ms</span>
       </div>
     </div>
   );
@@ -432,80 +429,75 @@ function EditorPreview() {
 
 function PosPreview() {
   return (
-    <div className="aw aw-pos" aria-hidden="true">
-      <div className="aw-chrome">
-        <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">TryPOS Suite — INV-00432</span>
-        <div className="aw-chrome-right">
-          <span className="aw-badge aw-badge-amber">Pending</span>
-          <span className="aw-badge aw-badge-green">● Live</span>
+    <div className="aw aw-pos app-pos" aria-hidden="true">
+      {/* Enterprise nav bar */}
+      <div className="pos-nav">
+        <span className="pos-brand">TryPOS</span>
+        <div className="pos-nav-tabs">
+          <span className="pos-tab">Dashboard</span>
+          <span className="pos-tab pos-tab-active">Invoices</span>
+          <span className="pos-tab">Stock</span>
+          <span className="pos-tab">Contracts</span>
+        </div>
+        <div className="pos-nav-right">
+          <span className="pos-live-dot" />
+          <span className="pos-user">Admin</span>
         </div>
       </div>
 
-      {/* KPI bar — full-width, no sidebar */}
-      <div className="awpos-kpi-bar">
-        <div className="awpos-kpi-item">
-          <span className="awpos-kpi-label">Today's sales</span>
-          <span className="awpos-kpi-value awpos-green">R 8,420</span>
+      {/* KPI strip */}
+      <div className="pos-kpi-strip">
+        <div className="pos-kpi">
+          <span className="pos-kpi-val pos-kpi-green">R 8,420</span>
+          <span className="pos-kpi-label">Today's Revenue</span>
         </div>
-        <div className="awpos-kpi-divider" />
-        <div className="awpos-kpi-item">
-          <span className="awpos-kpi-label">Invoices out</span>
-          <span className="awpos-kpi-value">3</span>
+        <div className="pos-kpi">
+          <span className="pos-kpi-val">3</span>
+          <span className="pos-kpi-label">Invoices Out</span>
         </div>
-        <div className="awpos-kpi-divider" />
-        <div className="awpos-kpi-item">
-          <span className="awpos-kpi-label">Low stock alerts</span>
-          <span className="awpos-kpi-value awpos-amber">4</span>
+        <div className="pos-kpi">
+          <span className="pos-kpi-val pos-kpi-warn">4</span>
+          <span className="pos-kpi-label">Low Stock</span>
         </div>
-        <div className="awpos-kpi-divider" />
-        <div className="awpos-kpi-item">
-          <span className="awpos-kpi-label">Stock items</span>
-          <span className="awpos-kpi-value">84</span>
+        <div className="pos-kpi">
+          <span className="pos-kpi-val">84</span>
+          <span className="pos-kpi-label">Total SKUs</span>
         </div>
       </div>
 
-      {/* POS terminal: cart left, totals right */}
-      <div className="aw-body awpos-terminal">
-        <div className="awpos-cart">
-          <div className="awpos-cart-head">
-            <span>Item</span>
-            <span>Qty</span>
-            <span>Total</span>
+      {/* Invoice document */}
+      <div className="aw-body pos-body">
+        <div className="pos-invoice">
+          <div className="pos-inv-head">
+            <div>
+              <div className="pos-inv-title">INV-00432</div>
+              <div className="pos-inv-sub">18 Apr 2026 · Net 30 · Pending</div>
+            </div>
+            <span className="pos-inv-badge">PENDING</span>
           </div>
-          <div className="awpos-cart-item">
-            <span>Ceramic mug · 6pk</span>
-            <span>× 2</span>
-            <span>R 540.00</span>
+          <div className="pos-table">
+            <div className="pos-table-header">
+              <span>Item</span><span>Qty</span><span>Amount</span>
+            </div>
+            <div className="pos-table-row">
+              <span>Ceramic mug · 6pk</span><span>× 2</span><span>R 540.00</span>
+            </div>
+            <div className="pos-table-row">
+              <span>House blend · 250g</span><span>× 1</span><span>R 189.00</span>
+            </div>
+            <div className="pos-table-row pos-row-highlight">
+              <span>Service contract</span><span>× 1</span><span>R 1,200.00</span>
+            </div>
           </div>
-          <div className="awpos-cart-item">
-            <span>House blend · 250g</span>
-            <span>× 1</span>
-            <span>R 189.00</span>
+          <div className="pos-totals">
+            <div className="pos-total-row"><span>Subtotal</span><span>R 1,929.00</span></div>
+            <div className="pos-total-row"><span>VAT 15%</span><span>R 289.35</span></div>
+            <div className="pos-total-row pos-total-grand"><span>Total Due</span><span>R 2,218.35</span></div>
           </div>
-          <div className="awpos-cart-item awpos-cart-item-highlight">
-            <span>Service contract</span>
-            <span>× 1</span>
-            <span>R 1 200.00</span>
-          </div>
-          <div className="awpos-cart-spacer" />
-          <div className="awpos-sub-row">
-            <span>Subtotal</span>
-            <span>R 1 929.00</span>
-          </div>
-          <div className="awpos-sub-row">
-            <span>VAT 15%</span>
-            <span>R 289.35</span>
-          </div>
-        </div>
-
-        <div className="awpos-totals-panel">
-          <div className="awpos-total-label">Total due</div>
-          <div className="awpos-total-hero">R 2 218.35</div>
-          <div className="awpos-total-meta">Generated 18 Apr 2026 · Net 30</div>
-          <div className="awpos-actions">
-            <button className="awpos-btn awpos-btn-primary">Generate PDF</button>
-            <button className="awpos-btn">Save contract</button>
+          <div className="pos-actions">
+            <button className="pos-btn pos-btn-primary">Generate PDF</button>
+            <button className="pos-btn">Save Contract</button>
+            <button className="pos-btn">Email Client</button>
           </div>
         </div>
       </div>
@@ -515,37 +507,37 @@ function PosPreview() {
 
 function TerminalPreview() {
   return (
-    <div className="aw aw-terminal" aria-hidden="true">
-      <div className="aw-chrome aw-chrome-dark">
-        <div className="aw-dots"><i className="aw-dot-red"/><i className="aw-dot-yellow"/><i className="aw-dot-green"/></div>
-        <span className="aw-title">codexa — ~/projects/auth-service</span>
-        <div className="aw-chrome-right">
-          <span className="awt-model">gpt-4o</span>
-          <span className="aw-badge aw-badge-green">● Connected</span>
+    <div className="aw aw-terminal app-term" aria-hidden="true">
+      <div className="term-bar">
+        <div className="term-dots"><i className="td-r"/><i className="td-y"/><i className="td-g"/></div>
+        <span className="term-path">codexa — ~/projects/auth-service</span>
+        <div className="term-bar-right">
+          <span className="term-model">gpt-4o</span>
+          <span className="term-conn">● connected</span>
         </div>
       </div>
 
-      {/* Full-width chat — no sidebar */}
-      <div className="aw-body awt-full-term">
-        <div className="awt-msg awt-user">
-          <span className="awt-role">you</span>
-          <div className="awt-bubble awt-bubble-user">
-            refactor this so the retry logic is in its own helper
-          </div>
+      <div className="aw-body term-body">
+        <div className="term-line term-user">
+          <span className="term-prompt">❯</span>
+          <span>refactor this so the retry logic is in its own helper</span>
         </div>
 
-        <div className="awt-msg awt-ai">
-          <span className="awt-role awt-role-ai">codexa</span>
-          <div className="awt-bubble awt-bubble-ai">
-            <div>Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
-          </div>
+        <div className="term-block term-ai-block">
+          <div className="term-ai-label">codexa</div>
+          <div className="term-ai-text">Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
         </div>
 
-        <div className="awt-code-block">
-          <div className="awt-code-head">
-            <span className="awt-code-lang">ts</span>
+        <div className="term-file-op">
+          <span className="term-file-icon">✎</span>
+          <span>src/utils/retry.ts</span>
+          <span className="term-file-status">created</span>
+        </div>
+
+        <div className="term-code">
+          <div className="term-code-header">
+            <span className="term-lang">ts</span>
             <span>suggestion.ts</span>
-            <span className="awt-code-copy">copy</span>
           </div>
           <pre>{`async function withRetry(fn, { max = 3 }) {
   for (let i = 0; i < max; i++) {
@@ -554,15 +546,14 @@ function TerminalPreview() {
   }
 }
 
-// handler is now clean:
 export async function fetchUser(id: string) {
   return withRetry(() => db.users.findById(id));
 }`}</pre>
         </div>
 
-        <div className="awt-composer">
-          <span className="awt-prompt-icon">❯</span>
-          <span className="awt-placeholder">Ask anything<span className="awt-cursor" /></span>
+        <div className="term-input">
+          <span className="term-prompt">❯</span>
+          <span className="term-cursor" />
         </div>
       </div>
     </div>
@@ -571,73 +562,64 @@ export async function fetchUser(id: string) {
 
 function EduPreview() {
   return (
-    <div className="aw aw-edu" aria-hidden="true">
-      <div className="aw-chrome">
-        <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">EduTool · Recursion</span>
-        <div className="aw-chrome-right">
-          <span className="aw-badge aw-badge-green">4 / 7 passing</span>
+    <div className="aw aw-edu app-edu" aria-hidden="true">
+      {/* Warm header */}
+      <div className="edu-header">
+        <span className="edu-logo">EduTool</span>
+        <div className="edu-progress-pills">
+          <span className="edu-pill edu-pill-done">DS ✓</span>
+          <span className="edu-pill edu-pill-done">Algo ✓</span>
+          <span className="edu-pill edu-pill-current">Recursion</span>
+          <span className="edu-pill">Sorting</span>
+          <span className="edu-pill">Graphs</span>
+        </div>
+        <div className="edu-header-right">
+          <span className="edu-streak">🔥 4</span>
+          <span className="edu-xp">320 XP</span>
         </div>
       </div>
 
-      {/* Full-width challenge card — no sidebar */}
-      <div className="aw-body awedu-challenge">
-        {/* Inline progress strip */}
-        <div className="awedu-progress-strip">
-          <div className="awedu-prog-item">
-            <span className="awedu-prog-label">DS</span>
-            <div className="awedu-prog-bar"><div style={{ width: "88%" }} /></div>
+      {/* Exercise card */}
+      <div className="aw-body edu-body">
+        <div className="edu-card">
+          <div className="edu-card-top">
+            <span className="edu-exercise-num">Exercise 04</span>
+            <span className="edu-difficulty">Medium</span>
           </div>
-          <div className="awedu-prog-item">
-            <span className="awedu-prog-label">Algo</span>
-            <div className="awedu-prog-bar"><div style={{ width: "72%" }} /></div>
-          </div>
-          <div className="awedu-prog-item awedu-prog-active">
-            <span className="awedu-prog-label">Rec</span>
-            <div className="awedu-prog-bar awedu-prog-bar-active"><div style={{ width: "57%" }} /></div>
-          </div>
-          <div className="awedu-prog-item">
-            <span className="awedu-prog-label">Sort</span>
-            <div className="awedu-prog-bar"><div style={{ width: "0%" }} /></div>
-          </div>
-          <div className="awedu-prog-item">
-            <span className="awedu-prog-label">Graph</span>
-            <div className="awedu-prog-bar"><div style={{ width: "0%" }} /></div>
-          </div>
-        </div>
-
-        <div className="awedu-exercise-label">Exercise 04 · Recursion</div>
-        <div className="awedu-task">Write a recursive factorial function in Python.</div>
-
-        <pre className="awedu-code">
-{`def factorial(n):
+          <div className="edu-card-title">Write a recursive factorial function</div>
+          <pre className="edu-code">{`def factorial(n):
     if n <= 1:
         return 1
-    return n * factorial(n - 1)`}
-        </pre>
+    return n * factorial(n - 1)`}</pre>
 
-        {/* Horizontal test row */}
-        <div className="awedu-tests-row">
-          <div className="awedu-test awedu-pass">
-            <span className="awedu-icon">✓</span>
-            <span>f(0)==1</span>
+          <div className="edu-results">
+            <div className="edu-result edu-result-pass">
+              <span className="edu-result-icon">✓</span>
+              <span>f(0) == 1</span>
+            </div>
+            <div className="edu-result edu-result-pass">
+              <span className="edu-result-icon">✓</span>
+              <span>f(5) == 120</span>
+            </div>
+            <div className="edu-result edu-result-pass">
+              <span className="edu-result-icon">✓</span>
+              <span>f(1) == 1</span>
+            </div>
+            <div className="edu-result edu-result-fail">
+              <span className="edu-result-icon">✗</span>
+              <span>negative input</span>
+            </div>
           </div>
-          <div className="awedu-test awedu-pass">
-            <span className="awedu-icon">✓</span>
-            <span>f(5)==120</span>
-          </div>
-          <div className="awedu-test awedu-pass">
-            <span className="awedu-icon">✓</span>
-            <span>f(1)==1</span>
-          </div>
-          <div className="awedu-test awedu-fail">
-            <span className="awedu-icon">✗</span>
-            <span>negative</span>
-          </div>
-        </div>
 
-        <div className="awedu-feedback">
-          add a guard for <code>n {"<"} 0</code> to handle edge cases.
+          <div className="edu-hint">
+            <span className="edu-hint-icon">💡</span>
+            <span>Add a guard for <code>n &lt; 0</code> to handle edge cases.</span>
+          </div>
+
+          <div className="edu-bottom">
+            <span className="edu-score">3 / 4 passing</span>
+            <button className="edu-submit">Submit Solution</button>
+          </div>
         </div>
       </div>
     </div>
@@ -646,7 +628,7 @@ function EduPreview() {
 
 function GeoQuestPreview() {
   return (
-    <div className="aw aw-geo" aria-hidden="true">
+    <div className="aw aw-geo app-geo" aria-hidden="true">
       <div className="aw-geo-scene">
         <div className="awg-sky" />
         <div className="awg-horizon" />
@@ -719,7 +701,7 @@ function GeoQuestPreview() {
 
 function RugbyPreview() {
   return (
-    <div className="aw aw-rugby" aria-hidden="true">
+    <div className="aw aw-rugby app-rugby" aria-hidden="true">
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
         <span className="aw-title">RugbyMate</span>
@@ -802,7 +784,7 @@ function RugbyPreview() {
 
 function PerfPreview() {
   return (
-    <div className="aw aw-perf" aria-hidden="true">
+    <div className="aw aw-perf app-perf" aria-hidden="true">
       <div className="aw-chrome">
         <div className="aw-dots"><i /><i /><i /></div>
         <span className="aw-title">GameOpt · Gaming profile</span>
