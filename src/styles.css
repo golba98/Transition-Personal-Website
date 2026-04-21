@@ -474,6 +474,39 @@ a {
   line-height: 1.82;
 }
 
+.github-profile-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.github-profile-line {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: rgba(232, 229, 223, 0.9);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.github-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.github-stats span {
+  display: inline-flex;
+  min-height: 1.9rem;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.08rem;
+  padding: 0 0.68rem;
+  background: rgba(255, 255, 255, 0.014);
+  color: var(--dim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+}
+
 .reveal-line {
   overflow: hidden;
 }
@@ -858,6 +891,7 @@ a {
   font-size: clamp(1.35rem, 2.2vw, 2rem);
   font-weight: 360;
   line-height: 1.06;
+  overflow-wrap: anywhere;
 }
 
 .repo-card p {
@@ -887,6 +921,7 @@ a {
 }
 
 .repo-card-footer {
+  flex-wrap: wrap;
   margin-top: 1.4rem;
   color: var(--dim);
   font-size: 0.62rem;
@@ -900,6 +935,65 @@ a {
 .repo-card:hover .repo-arrow,
 .repo-card:focus-visible .repo-arrow {
   transform: translateX(0.32rem);
+}
+
+.repo-card-skeleton {
+  pointer-events: none;
+}
+
+.repo-card-skeleton span {
+  display: inline-flex;
+  min-height: 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.095),
+    rgba(255, 255, 255, 0.045)
+  );
+  background-size: 220% 100%;
+  animation: repo-skeleton 1.4s var(--ease) infinite;
+}
+
+.repo-card-skeleton .repo-card-header span:first-child {
+  width: 2.2rem;
+}
+
+.repo-card-skeleton .repo-card-header span:last-child {
+  width: 4.8rem;
+}
+
+.repo-card-skeleton .repo-card-body span {
+  display: block;
+  width: min(100%, 18rem);
+  height: 1.1rem;
+  margin-bottom: 0.85rem;
+}
+
+.repo-card-skeleton .repo-card-body span:last-child {
+  width: min(82%, 14rem);
+}
+
+.repo-card-skeleton .repo-tags span {
+  width: 4.5rem;
+}
+
+.repo-card-skeleton .repo-card-footer span:first-child {
+  width: 4rem;
+}
+
+.repo-card-skeleton .repo-card-footer span:last-child {
+  width: 7rem;
+}
+
+@keyframes repo-skeleton {
+  from {
+    background-position: 120% 0;
+  }
+
+  to {
+    background-position: -120% 0;
+  }
 }
 
 .repo-message {
@@ -3366,7 +3460,8 @@ a {
   .pp-chip,
   .pd-check,
   .pe-caret,
-  .pt-cursor {
+  .pt-cursor,
+  .repo-card-skeleton span {
     animation: none !important;
   }
 }
