@@ -34,3 +34,14 @@ npm run dev
 ```
 
 The local server is configured for `http://127.0.0.1:5173/`.
+
+## GitHub data
+
+The GitHub section loads live profile and repository data. Set `VITE_GITHUB_USERNAME`
+to choose the public account, or leave it unset to use `golba98`.
+
+Exact pinned repositories require a server-only `GITHUB_TOKEN` in the deployment
+environment so the Vercel API route can call GitHub GraphQL. Without that token,
+the site falls back to recent public non-fork repositories from GitHub REST. Never
+expose `GITHUB_TOKEN` with a `VITE_` prefix. Use a read-only token with the
+minimum permissions needed for public GraphQL profile data.
