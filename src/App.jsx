@@ -369,135 +369,243 @@ function ProjectVisual({ project, active }) {
 
 function EditorPreview() {
   return (
-    <div className="aw aw-editor app-editor" aria-hidden="true">
-      {/* Notion-style toolbar */}
-      <div className="ed-toolbar">
-        <div className="ed-toolbar-left">
-          <div className="ed-breadcrumb">
-            <span className="ed-bc-icon">📄</span>
+    <div className="aw app-editor" aria-hidden="true">
+      {/* Header — chromeless, canvas-first */}
+      <div className="ed-header">
+        <div className="ed-header-left">
+          <nav className="ed-breadcrumb">
+            <span className="ed-bc-crumb">Workspace</span>
             <span className="ed-bc-sep">/</span>
-            <span>Workspace</span>
-            <span className="ed-bc-sep">/</span>
-            <span className="ed-bc-active">project-notes</span>
-          </div>
+            <span className="ed-bc-crumb ed-bc-active">Q2 Brief</span>
+          </nav>
+          <span className="ed-saved">Saved 2s ago</span>
         </div>
-        <div className="ed-toolbar-right">
+        <div className="ed-header-right">
+          <span className="ed-cmdk" aria-hidden="true">
+            <kbd>⌘</kbd><kbd>K</kbd>
+          </span>
           <div className="ed-avatars">
-            <span className="ed-avatar ed-avatar-j">J</span>
-            <span className="ed-avatar ed-avatar-m">M</span>
-          </div>
-          <button className="ed-share-btn">Share</button>
-          <span className="ed-saved">✓ Saved</span>
-        </div>
-      </div>
-
-      {/* Document canvas */}
-      <div className="aw-body ed-canvas">
-        <div className="ed-page">
-          <h1 className="ed-title">Real-time Collaboration<span className="awd-caret awd-caret-a" /></h1>
-          <p className="ed-subtitle">How SynchroEdit keeps documents in sync across users</p>
-          <div className="ed-divider" />
-          <p className="ed-body-text">This document outlines the approach used in SynchroEdit. Two or more users can type in the same file simultaneously — edits are merged on every keystroke using operational transforms.</p>
-          <p className="ed-body-text awd-selected">Classic conflict: two users change the same line at the same time. Who wins?<span className="awd-caret awd-caret-b" /></p>
-          <div className="ed-callout">
-            <span className="ed-callout-icon">💡</span>
-            <span>OT resolves conflicts by tracking <em>intent</em>, not just cursor position.</span>
-          </div>
-          <h2 className="ed-h2">Design decisions</h2>
-          <p className="ed-body-text ed-muted">Operational transforms preserve each user's intent even under concurrent edits at the same offset.</p>
-          <div className="ed-collab-footer">
-            <div className="ed-collab-item">
-              <span className="ed-collab-dot ed-dot-j" />
-              Jordan editing · Line 14
-            </div>
-            <div className="ed-collab-item">
-              <span className="ed-collab-dot ed-dot-m" />
-              Mia viewing · Paragraph 2
-            </div>
+            <span className="ed-avatar ed-avatar-j" title="Jordan">J</span>
+            <span className="ed-avatar ed-avatar-m" title="Mia">M</span>
           </div>
         </div>
       </div>
 
-      {/* Minimal status */}
-      <div className="ed-status">
-        <span>1,247 words</span>
-        <span className="ed-status-sync">⟳ Synced · 12ms</span>
+      {/* Body: tiny left rail + paper canvas + margin thread */}
+      <div className="ed-body">
+        <aside className="ed-rail" aria-hidden="true">
+          <span className="ed-rail-dot" />
+          <span className="ed-rail-dot" />
+          <span className="ed-rail-dot" />
+        </aside>
+
+        <article className="ed-canvas">
+          <h1 className="ed-title">Q2 Product Brief — Presence & Collaboration</h1>
+          <p className="ed-subtitle">Draft · Jordan Vorster & Mia Okafor · last touched 14:07</p>
+
+          <p className="ed-p">
+            The strongest signal from Q1 research is that teams want a writing surface that does
+            less, not more. Presence should feel like a quiet companion — not a dashboard glued to
+            the margin of the page.
+          </p>
+
+          <p className="ed-p">
+            Our near-term focus is to collapse the collaboration stack into a single, calm live
+            session model. Cursors carry identity; selections carry intent; comments live in the
+            margin, anchored to the prose they cite.
+          </p>
+
+          <p className="ed-p ed-p-live">
+            The next milestone proves this: two authors drafting a launch memo in the same paragraph,
+            with zero visible UI churn and{" "}
+            <span className="ed-hl">sub-40&nbsp;ms presence latency</span>
+            <span className="ed-caret ed-caret-b">
+              <span className="ed-caret-label">Mia</span>
+            </span>
+            .
+          </p>
+
+          <p className="ed-p ed-p-muted">
+            Everything else — slash menus, inline suggestions, block-level transforms — sits behind
+            the palette. The canvas never raises its voice.
+          </p>
+
+          {/* Margin comment thread, anchored to the highlighted phrase */}
+          <aside className="ed-margin">
+            <span className="ed-margin-leader" aria-hidden="true" />
+            <div className="ed-thread">
+              <header className="ed-thread-head">
+                <span className="ed-thread-avatar ed-avatar-j">J</span>
+                <span className="ed-thread-name">Jordan</span>
+                <span className="ed-thread-time">1m</span>
+              </header>
+              <p className="ed-thread-body">
+                Can we tighten this to one sentence? Feels like the hinge of the whole section.
+              </p>
+              <footer className="ed-thread-foot">
+                <span className="ed-typing">
+                  <i /><i /><i />
+                </span>
+                <span className="ed-typing-label">Mia is typing…</span>
+              </footer>
+            </div>
+          </aside>
+        </article>
       </div>
     </div>
   );
 }
 
 function PosPreview() {
+  const NavIcon = ({ path, active }) => (
+    <span className={`pos-navicon${active ? " pos-navicon-active" : ""}`}>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d={path} />
+      </svg>
+    </span>
+  );
+
+  // Single polyline sparkline
+  const Sparkline = ({ points, tint }) => (
+    <svg className="pos-spark" viewBox="0 0 64 18" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points={points} fill="none" stroke={tint} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+
   return (
-    <div className="aw aw-pos app-pos" aria-hidden="true">
-      {/* Enterprise nav bar */}
-      <div className="pos-nav">
-        <span className="pos-brand">TryPOS</span>
-        <div className="pos-nav-tabs">
-          <span className="pos-tab">Dashboard</span>
-          <span className="pos-tab pos-tab-active">Invoices</span>
-          <span className="pos-tab">Stock</span>
-          <span className="pos-tab">Contracts</span>
-        </div>
-        <div className="pos-nav-right">
-          <span className="pos-live-dot" />
-          <span className="pos-user">Admin</span>
-        </div>
-      </div>
+    <div className="aw app-pos" aria-hidden="true">
+      <div className="pos-shell">
+        {/* Persistent left sidebar */}
+        <aside className="pos-sidebar">
+          <div className="pos-logo">
+            <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true">
+              <path d="M3 4 L9 2 L15 4 L15 14 L9 16 L3 14 Z" fill="none" stroke="#7c5cff" strokeWidth="1.4" strokeLinejoin="round" />
+              <path d="M9 2 L9 16" stroke="#7c5cff" strokeWidth="1.1" opacity="0.55" />
+            </svg>
+          </div>
+          <nav className="pos-nav-items">
+            <NavIcon path="M3 12 L12 4 L21 12 M5 10 V20 H19 V10" />
+            <span className="pos-nav-active-wrap">
+              <NavIcon active path="M6 3 H16 L18 5 V21 H6 Z M9 8 H15 M9 12 H15 M9 16 H13" />
+            </span>
+            <NavIcon path="M3 7 H21 V19 H3 Z M3 7 L7 3 H17 L21 7" />
+            <NavIcon path="M8 4 H16 V20 H8 Z M5 7 H8 M5 12 H8 M5 17 H8" />
+            <NavIcon path="M12 12 a4 4 0 1 0 0 -8 a4 4 0 0 0 0 8 Z M4 21 c0 -4 3.6 -7 8 -7 s8 3 8 7" />
+            <NavIcon path="M4 20 V10 M10 20 V4 M16 20 V14 M22 20 V7" />
+            <NavIcon path="M12 3 v3 M12 18 v3 M3 12 h3 M18 12 h3 M5.6 5.6 l2.1 2.1 M16.3 16.3 l2.1 2.1 M5.6 18.4 l2.1 -2.1 M16.3 7.7 l2.1 -2.1 M12 8 a4 4 0 1 0 0 8 a4 4 0 0 0 0 -8" />
+          </nav>
+          <div className="pos-sidebar-avatar">KB</div>
+        </aside>
 
-      {/* KPI strip */}
-      <div className="pos-kpi-strip">
-        <div className="pos-kpi">
-          <span className="pos-kpi-val pos-kpi-green">R 8,420</span>
-          <span className="pos-kpi-label">Today's Revenue</span>
-        </div>
-        <div className="pos-kpi">
-          <span className="pos-kpi-val">3</span>
-          <span className="pos-kpi-label">Invoices Out</span>
-        </div>
-        <div className="pos-kpi">
-          <span className="pos-kpi-val pos-kpi-warn">4</span>
-          <span className="pos-kpi-label">Low Stock</span>
-        </div>
-        <div className="pos-kpi">
-          <span className="pos-kpi-val">84</span>
-          <span className="pos-kpi-label">Total SKUs</span>
-        </div>
-      </div>
+        {/* Main column */}
+        <div className="pos-main">
+          {/* Top bar */}
+          <div className="pos-topbar">
+            <h3 className="pos-page-title">Invoices</h3>
+            <div className="pos-tabs">
+              <span className="pos-tabline">All</span>
+              <span className="pos-tabline">Paid</span>
+              <span className="pos-tabline pos-tabline-active">Pending</span>
+              <span className="pos-tabline">Overdue</span>
+            </div>
+            <div className="pos-topbar-right">
+              <span className="pos-search">
+                <svg viewBox="0 0 16 16" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                  <circle cx="7" cy="7" r="4.5" />
+                  <path d="M11 11 L14 14" />
+                </svg>
+                <span>Search invoices</span>
+              </span>
+              <button className="pos-new-btn">
+                <span className="pos-new-plus">+</span> New invoice
+              </button>
+            </div>
+          </div>
 
-      {/* Invoice document */}
-      <div className="aw-body pos-body">
-        <div className="pos-invoice">
-          <div className="pos-inv-head">
-            <div>
-              <div className="pos-inv-title">INV-00432</div>
-              <div className="pos-inv-sub">18 Apr 2026 · Net 30 · Pending</div>
+          {/* KPI row */}
+          <div className="pos-kpis">
+            <div className="pos-kpi-card">
+              <span className="pos-kpi-label">Outstanding</span>
+              <div className="pos-kpi-row">
+                <span className="pos-kpi-num">R 184,320</span>
+                <span className="pos-kpi-delta pos-delta-up">+4.2%</span>
+              </div>
+              <Sparkline points="0,12 8,10 16,11 24,7 32,8 40,5 48,7 56,3 64,4" tint="#7c5cff" />
             </div>
-            <span className="pos-inv-badge">PENDING</span>
+            <div className="pos-kpi-card">
+              <span className="pos-kpi-label">Paid this month</span>
+              <div className="pos-kpi-row">
+                <span className="pos-kpi-num">R 612,940</span>
+                <span className="pos-kpi-delta pos-delta-up pos-delta-mint">+11.8%</span>
+              </div>
+              <Sparkline points="0,14 8,13 16,11 24,10 32,8 40,6 48,5 56,3 64,2" tint="#3ee0a4" />
+            </div>
+            <div className="pos-kpi-card">
+              <span className="pos-kpi-label">Avg days to pay</span>
+              <div className="pos-kpi-row">
+                <span className="pos-kpi-num">23.4</span>
+                <span className="pos-kpi-delta pos-delta-down">−1.9</span>
+              </div>
+              <Sparkline points="0,6 8,8 16,7 24,9 32,8 40,11 48,10 56,13 64,12" tint="#8a92a6" />
+            </div>
           </div>
-          <div className="pos-table">
-            <div className="pos-table-header">
-              <span>Item</span><span>Qty</span><span>Amount</span>
+
+          {/* Row 2: table + payout card */}
+          <div className="pos-row2">
+            <div className="pos-table-wrap">
+              <div className="pos-thead">
+                <span>Invoice</span>
+                <span>Customer</span>
+                <span className="pos-th-right">Amount</span>
+                <span>Status</span>
+                <span className="pos-th-issued">
+                  Issued
+                  <svg viewBox="0 0 10 10" width="7" height="7" aria-hidden="true">
+                    <path d="M2 4 L5 7 L8 4" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                </span>
+                <span>Due</span>
+              </div>
+              {[
+                { id: "INV-2041", cust: "Keegan Botha",      initials: "KB", aTint: "#7c5cff", amount: "R 12,480.00", status: "Paid",    pill: "mint",   issued: "02 Apr", due: "16 Apr" },
+                { id: "INV-2042", cust: "Lerato Moeng",      initials: "LM", aTint: "#3ee0a4", amount: "R 4,900.00",  status: "Pending", pill: "violet", issued: "05 Apr", due: "19 Apr" },
+                { id: "INV-2043", cust: "BlueCoral Studios", initials: "BC", aTint: "#f26a6a", amount: "R 28,200.00", status: "Overdue", pill: "coral",  issued: "14 Mar", due: "28 Mar" },
+                { id: "INV-2044", cust: "Thandi Dube",       initials: "TD", aTint: "#f7a23f", amount: "R 7,650.00",  status: "Paid",    pill: "mint",   issued: "10 Apr", due: "24 Apr" },
+                { id: "INV-2045", cust: "Axis Freight",      initials: "AF", aTint: "#8a92a6", amount: "R 19,000.00", status: "Pending", pill: "violet", issued: "11 Apr", due: "25 Apr" },
+              ].map((row) => (
+                <div className="pos-trow" key={row.id}>
+                  <span className="pos-inv-id">{row.id}</span>
+                  <span className="pos-cust">
+                    <span className="pos-ava" style={{ background: row.aTint }}>{row.initials}</span>
+                    {row.cust}
+                  </span>
+                  <span className="pos-amount">{row.amount}</span>
+                  <span><span className={`pos-pill pos-pill-${row.pill}`}>{row.status}</span></span>
+                  <span className="pos-cell-dim">{row.issued}</span>
+                  <span className="pos-cell-dim">{row.due}</span>
+                </div>
+              ))}
             </div>
-            <div className="pos-table-row">
-              <span>Ceramic mug · 6pk</span><span>× 2</span><span>R 540.00</span>
+
+            <div className="pos-payout">
+              <span className="pos-payout-label">Next payout</span>
+              <div className="pos-payout-ring-wrap">
+                <svg viewBox="0 0 56 56" className="pos-payout-ring" aria-hidden="true">
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="url(#payoutGrad)" strokeWidth="3" strokeLinecap="round"
+                    strokeDasharray="150.8" strokeDashoffset="48.3" transform="rotate(-90 28 28)" />
+                  <defs>
+                    <linearGradient id="payoutGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#7c5cff" />
+                      <stop offset="100%" stopColor="#b59bff" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="pos-payout-amt">R 84,200</div>
+              </div>
+              <div className="pos-payout-meta">Arrives <strong>Fri 26 Apr</strong></div>
+              <button className="pos-payout-cta">Review payout</button>
             </div>
-            <div className="pos-table-row">
-              <span>House blend · 250g</span><span>× 1</span><span>R 189.00</span>
-            </div>
-            <div className="pos-table-row pos-row-highlight">
-              <span>Service contract</span><span>× 1</span><span>R 1,200.00</span>
-            </div>
-          </div>
-          <div className="pos-totals">
-            <div className="pos-total-row"><span>Subtotal</span><span>R 1,929.00</span></div>
-            <div className="pos-total-row"><span>VAT 15%</span><span>R 289.35</span></div>
-            <div className="pos-total-row pos-total-grand"><span>Total Due</span><span>R 2,218.35</span></div>
-          </div>
-          <div className="pos-actions">
-            <button className="pos-btn pos-btn-primary">Generate PDF</button>
-            <button className="pos-btn">Save Contract</button>
-            <button className="pos-btn">Email Client</button>
           </div>
         </div>
       </div>
@@ -507,119 +615,213 @@ function PosPreview() {
 
 function TerminalPreview() {
   return (
-    <div className="aw aw-terminal app-term" aria-hidden="true">
-      <div className="term-bar">
-        <div className="term-dots"><i className="td-r"/><i className="td-y"/><i className="td-g"/></div>
-        <span className="term-path">codexa — ~/projects/auth-service</span>
-        <div className="term-bar-right">
-          <span className="term-model">gpt-4o</span>
-          <span className="term-conn">● connected</span>
+    <div className="aw app-term" aria-hidden="true">
+      {/* tab bar */}
+      <div className="term-tabbar">
+        <div className="term-tabs">
+          <span className="term-tab term-tab-active">synchroedit</span>
+          <span className="term-tab">pos</span>
+          <span className="term-tab">~</span>
+        </div>
+        <div className="term-tabbar-right">
+          <span className="term-model-pill">gpt-4o · codex</span>
+          <span className="term-status-dot" />
         </div>
       </div>
 
-      <div className="aw-body term-body">
-        <div className="term-line term-user">
-          <span className="term-prompt">❯</span>
-          <span>refactor this so the retry logic is in its own helper</span>
+      {/* main terminal body */}
+      <div className="term-body">
+        <div className="term-session-header">codex ✦ session #42 · started 14:02</div>
+
+        <div className="term-prompt-line">
+          <span className="term-prompt-path">jordan@node-02 ~/synchroedit (main)</span>
+          <span className="term-prompt-mark">✦</span>
+          <span className="term-prompt-text">refactor the presence sync to use a single channel</span>
         </div>
 
-        <div className="term-block term-ai-block">
-          <div className="term-ai-label">codexa</div>
-          <div className="term-ai-text">Pull the retry into <code>withRetry(fn, opts)</code> and call it from the handler — keeps the call site focused on intent, not on backoff logic.</div>
+        <div className="term-plan">
+          <div className="term-plan-head">Codex · plan</div>
+          <ol className="term-plan-list">
+            <li><span className="term-plan-num">1</span>Collapse <em>presenceChannel</em> and <em>cursorChannel</em> into one multiplexed channel.</li>
+            <li><span className="term-plan-num">2</span>Introduce <em>kind</em> discriminator on messages.</li>
+            <li><span className="term-plan-num">3</span>Update <em>useCollabSession</em> to route by <em>kind</em>.</li>
+          </ol>
         </div>
 
-        <div className="term-file-op">
-          <span className="term-file-icon">✎</span>
-          <span>src/utils/retry.ts</span>
-          <span className="term-file-status">created</span>
+        <div className="term-tool">
+          <span className="term-tool-glyph">⌁</span>
+          <span className="term-tool-verb">edit</span>
+          <span className="term-tool-path">src/collab/channel.ts</span>
+          <span className="term-tool-counts">
+            <span className="term-diff-plus">+48</span>
+            <span className="term-diff-minus">−12</span>
+          </span>
         </div>
 
-        <div className="term-code">
-          <div className="term-code-header">
-            <span className="term-lang">ts</span>
-            <span>suggestion.ts</span>
+        <div className="term-diff">
+          <div className="term-diff-row">
+            <span className="term-diff-gutter">12</span>
+            <span className="term-diff-sign term-diff-sign-minus">−</span>
+            <span className="term-diff-line term-diff-line-minus">{"const presenceChannel = supa.channel(`presence:${roomId}`)"}</span>
           </div>
-          <pre>{`async function withRetry(fn, { max = 3 }) {
-  for (let i = 0; i < max; i++) {
-    try { return await fn(); }
-    catch (e) { if (i === max-1) throw e; }
-  }
-}
-
-export async function fetchUser(id: string) {
-  return withRetry(() => db.users.findById(id));
-}`}</pre>
+          <div className="term-diff-row">
+            <span className="term-diff-gutter">13</span>
+            <span className="term-diff-sign term-diff-sign-minus">−</span>
+            <span className="term-diff-line term-diff-line-minus">{"const cursorChannel = supa.channel(`cursor:${roomId}`)"}</span>
+          </div>
+          <div className="term-diff-row">
+            <span className="term-diff-gutter">12</span>
+            <span className="term-diff-sign term-diff-sign-plus">+</span>
+            <span className="term-diff-line term-diff-line-plus">{"const channel = supa.channel(`collab:${roomId}`)"}</span>
+          </div>
+          <div className="term-diff-row">
+            <span className="term-diff-gutter">13</span>
+            <span className="term-diff-sign term-diff-sign-plus">+</span>
+            <span className="term-diff-line term-diff-line-plus">{"channel.on('broadcast', { event: 'sync' }, route)"}</span>
+          </div>
+          <div className="term-diff-row">
+            <span className="term-diff-gutter">14</span>
+            <span className="term-diff-sign term-diff-sign-plus">+</span>
+            <span className="term-diff-line term-diff-line-plus">{"const route = (m) => handlers[m.kind]?.(m.payload)"}</span>
+          </div>
         </div>
 
-        <div className="term-input">
-          <span className="term-prompt">❯</span>
-          <span className="term-cursor" />
+        <div className="term-done">
+          <span className="term-done-check">✓</span>
+          <span>done in 2.4s · 14/14 tests passed</span>
         </div>
+
+        <div className="term-live">
+          <span className="term-prompt-path">jordan@node-02 ~/synchroedit (main)</span>
+          <span className="term-prompt-mark">✦</span>
+          <span className="term-caret-block" />
+        </div>
+      </div>
+
+      {/* tmux-style status line */}
+      <div className="term-status">
+        <span className="term-status-zone term-status-left">main · clean</span>
+        <span className="term-status-zone term-status-mid">⏻ gpt-4o · codex</span>
+        <span className="term-status-zone term-status-right">14:07 · focus</span>
       </div>
     </div>
   );
 }
 
 function EduPreview() {
+  const RingIcon = ({ pct, tint }) => (
+    <svg viewBox="0 0 36 36" width="28" height="28" aria-hidden="true" className="edu-ring-svg">
+      <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(0,0,0,0.07)" strokeWidth="3.5" />
+      <circle cx="18" cy="18" r="14" fill="none" stroke={tint} strokeWidth="3.5" strokeLinecap="round"
+        strokeDasharray={`${(pct / 100) * 87.96} 87.96`} transform="rotate(-90 18 18)" />
+    </svg>
+  );
+
+  const TabIcon = ({ path, active }) => (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill={active ? "#ff7a59" : "none"} stroke={active ? "#ff7a59" : "#8b8397"} strokeWidth={active ? "0" : "1.6"} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={path} />
+    </svg>
+  );
+
   return (
-    <div className="aw aw-edu app-edu" aria-hidden="true">
-      {/* Warm header */}
-      <div className="edu-header">
-        <span className="edu-logo">EduTool</span>
-        <div className="edu-progress-pills">
-          <span className="edu-pill edu-pill-done">DS ✓</span>
-          <span className="edu-pill edu-pill-done">Algo ✓</span>
-          <span className="edu-pill edu-pill-current">Recursion</span>
-          <span className="edu-pill">Sorting</span>
-          <span className="edu-pill">Graphs</span>
-        </div>
-        <div className="edu-header-right">
-          <span className="edu-streak">🔥 4</span>
-          <span className="edu-xp">320 XP</span>
+    <div className="aw app-edu" aria-hidden="true">
+      {/* iOS status bar */}
+      <div className="edu-statusbar">
+        <span className="edu-time">9:41</span>
+        <div className="edu-sysicons">
+          <svg viewBox="0 0 18 12" width="11" height="8" aria-hidden="true"><path d="M1 11 L1 9 M4 11 L4 7 M7 11 L7 5 M10 11 L10 3 M13 11 L13 1" stroke="#1a1333" strokeWidth="1.4" strokeLinecap="round" /></svg>
+          <svg viewBox="0 0 16 12" width="10" height="8" aria-hidden="true"><path d="M8 3 a6 6 0 0 1 6 6 M8 6 a3 3 0 0 1 3 3 M8 9 a0.5 0.5 0 0 1 0 0.1" fill="none" stroke="#1a1333" strokeWidth="1.4" strokeLinecap="round" /></svg>
+          <span className="edu-battery"><span /></span>
         </div>
       </div>
 
-      {/* Exercise card */}
-      <div className="aw-body edu-body">
-        <div className="edu-card">
-          <div className="edu-card-top">
-            <span className="edu-exercise-num">Exercise 04</span>
-            <span className="edu-difficulty">Medium</span>
-          </div>
-          <div className="edu-card-title">Write a recursive factorial function</div>
-          <pre className="edu-code">{`def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)`}</pre>
+      {/* Greeting header */}
+      <div className="edu-greet">
+        <div className="edu-greet-text">
+          <h4 className="edu-hello">Morning, Jordan ☀️</h4>
+          <p className="edu-sub">Day 14 streak — let's keep it going</p>
+        </div>
+        <div className="edu-greet-chips">
+          <span className="edu-chip edu-chip-streak">🔥 14</span>
+          <span className="edu-chip edu-chip-xp">✦ 2,480 XP</span>
+        </div>
+      </div>
 
-          <div className="edu-results">
-            <div className="edu-result edu-result-pass">
-              <span className="edu-result-icon">✓</span>
-              <span>f(0) == 1</span>
-            </div>
-            <div className="edu-result edu-result-pass">
-              <span className="edu-result-icon">✓</span>
-              <span>f(5) == 120</span>
-            </div>
-            <div className="edu-result edu-result-pass">
-              <span className="edu-result-icon">✓</span>
-              <span>f(1) == 1</span>
-            </div>
-            <div className="edu-result edu-result-fail">
-              <span className="edu-result-icon">✗</span>
-              <span>negative input</span>
-            </div>
+      {/* Daily Quest hero card */}
+      <div className="edu-hero">
+        <div className="edu-hero-mascot" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36">
+            <circle cx="20" cy="20" r="16" fill="rgba(255,255,255,0.22)" />
+            <circle cx="14" cy="17" r="2.2" fill="#fff" />
+            <circle cx="26" cy="17" r="2.2" fill="#fff" />
+            <path d="M14 25 Q20 29 26 25" stroke="#fff" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+        <div className="edu-hero-body">
+          <span className="edu-hero-label">Today's Quest</span>
+          <h4 className="edu-hero-title">Master Recursion</h4>
+          <span className="edu-hero-sub">Lesson 4 of 8</span>
+          <div className="edu-hero-bar">
+            <span className="edu-hero-fill" />
           </div>
+          <button className="edu-hero-cta">
+            Continue
+            <svg viewBox="0 0 14 14" width="9" height="9" aria-hidden="true"><path d="M5 3 L9 7 L5 11" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </div>
+      </div>
 
-          <div className="edu-hint">
-            <span className="edu-hint-icon">💡</span>
-            <span>Add a guard for <code>n &lt; 0</code> to handle edge cases.</span>
+      {/* Course rail — horizontal scroll */}
+      <div className="edu-rail-wrap">
+        <div className="edu-rail-head">
+          <h5 className="edu-rail-title">Your courses</h5>
+          <span className="edu-rail-more">See all</span>
+        </div>
+        <div className="edu-rail">
+          <div className="edu-tile edu-tile-mint">
+            <div className="edu-tile-icon">{"{ }"}</div>
+            <span className="edu-tile-name">Python</span>
+            <RingIcon pct={72} tint="#24a47b" />
           </div>
+          <div className="edu-tile edu-tile-lav">
+            <div className="edu-tile-icon">JS</div>
+            <span className="edu-tile-name">JavaScript</span>
+            <RingIcon pct={46} tint="#6b55db" />
+          </div>
+          <div className="edu-tile edu-tile-sky">
+            <div className="edu-tile-icon">⌘</div>
+            <span className="edu-tile-name">Data Structures</span>
+            <RingIcon pct={85} tint="#3b82c9" />
+          </div>
+          <div className="edu-tile edu-tile-butter">
+            <div className="edu-tile-icon">∑</div>
+            <span className="edu-tile-name">Algorithms</span>
+            <RingIcon pct={18} tint="#d49619" />
+          </div>
+        </div>
+      </div>
 
-          <div className="edu-bottom">
-            <span className="edu-score">3 / 4 passing</span>
-            <button className="edu-submit">Submit Solution</button>
-          </div>
+      {/* Bottom tab bar */}
+      <div className="edu-tabbar">
+        <div className="edu-tab edu-tab-active">
+          <TabIcon active path="M3 12 L12 4 L21 12 M5 10 V20 H19 V10" />
+          <span>Home</span>
+        </div>
+        <div className="edu-tab">
+          <TabIcon path="M4 12 a8 8 0 1 0 16 0 a8 8 0 0 0 -16 0 M12 4 V12 L17 15" />
+          <span>Practice</span>
+        </div>
+        <div className="edu-tab">
+          <TabIcon path="M12 3 L3 8 L12 13 L21 8 Z M3 13 L12 18 L21 13 M3 18 L12 23 L21 18" />
+          <span>Quests</span>
+        </div>
+        <div className="edu-tab">
+          <TabIcon path="M5 21 V9 M12 21 V4 M19 21 V14" />
+          <span>Leaders</span>
+        </div>
+        <div className="edu-tab">
+          <TabIcon path="M12 12 a4 4 0 1 0 0 -8 a4 4 0 0 0 0 8 M4 21 c0 -4 3.6 -7 8 -7 s8 3 8 7" />
+          <span>You</span>
         </div>
       </div>
     </div>
@@ -627,73 +829,149 @@ function EduPreview() {
 }
 
 function GeoQuestPreview() {
+  // Compass needle: 34° bearing. SVG 0° = east, so north = -90°.
+  const needleRad = ((34 - 90) * Math.PI) / 180;
+  const needleX = 50 + Math.cos(needleRad) * 28;
+  const needleY = 50 + Math.sin(needleRad) * 28;
+
   return (
-    <div className="aw aw-geo app-geo" aria-hidden="true">
-      <div className="aw-geo-scene">
-        <div className="awg-sky" />
-        <div className="awg-horizon" />
-        <div className="awg-ground" />
+    <div className="aw app-geo" aria-hidden="true">
+      <div className="geo-scene">
 
-        {/* Atmospheric depth layers */}
-        <div className="awg-depth-a" />
-        <div className="awg-depth-b" />
+        {/* ── Scene ── */}
+        <div className="geo-sky" />
+        <div className="geo-halo" />
 
-        {/* HUD top */}
-        <div className="awg-hud-top">
-          <div className="awg-hud-pill">
-            <span className="awg-label">Round</span>
-            <strong>4 / 5</strong>
+        {/* Far ridge: pale atmospheric haze, gradient fill */}
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-far">
+          <defs>
+            <linearGradient id="grf" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#8294B8" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#1C2240" stopOpacity="0.85" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#grf)" d="M0,90 C60,78 120,82 180,70 S280,62 340,72 S420,68 400,120 L0,120 Z" />
+        </svg>
+        <div className="geo-haze geo-haze-a" />
+
+        {/* Mid ridge: purple-slate, gradient fill, prominent peak */}
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-mid">
+          <defs>
+            <linearGradient id="grm" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3A2A5C" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#100D1E" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#grm)" d="M0,88 C50,70 110,80 150,52 S230,30 280,48 S360,62 400,52 L400,120 L0,120 Z" />
+        </svg>
+        <div className="geo-haze geo-haze-b" />
+
+        {/* Near ridge: near-black silhouette */}
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-near">
+          <defs>
+            <linearGradient id="grn" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0E0D16" stopOpacity="1" />
+              <stop offset="100%" stopColor="#06060C" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#grn)" d="M0,82 C40,78 80,64 130,72 S210,78 260,60 S340,48 400,66 L400,120 L0,120 Z" />
+        </svg>
+
+        <div className="geo-ground" />
+        <div className="geo-vignette" />
+        <div className="geo-grain" />
+
+        {/* ── HUD ── round indicator · timer · score */}
+        <div className="geo-hud">
+          <div className="geo-pill geo-pill-round">
+            <span className="geo-round-label">ROUND 4 OF 5</span>
+            <span className="geo-round-dots">
+              <i className="is-filled" /><i className="is-filled" /><i className="is-filled" /><i className="is-filled" /><i />
+            </span>
           </div>
-          <div className="awg-hud-pill awg-score">
-            <span className="awg-label">Score</span>
-            <strong>2,450 pts</strong>
+          <div className="geo-pill geo-pill-timer">
+            <span className="geo-timer-val">02:18</span>
           </div>
-          <div className="awg-hud-pill">
-            <span className="awg-label">Timer</span>
-            <strong>0:42</strong>
+          <div className="geo-pill geo-pill-score">
+            <span className="geo-score-val">12,840</span>
+            <span className="geo-score-pts">PTS</span>
+          </div>
+        </div>
+
+        {/* ── Compass ── */}
+        <div className="geo-compass">
+          <svg viewBox="0 0 100 100" className="geo-compass-svg">
+            {/* 270° arc, circumference of r=42 ≈ 263.9; 75% = 197.9 */}
+            <circle cx="50" cy="50" r="42" className="geo-compass-arc"
+              strokeDasharray="197.9 65.97" transform="rotate(135 50 50)" />
+            <line x1="50" y1="5"  x2="50" y2="12" className="geo-compass-tick" />
+            <line x1="95" y1="50" x2="88" y2="50" className="geo-compass-tick" />
+            <line x1="50" y1="95" x2="50" y2="88" className="geo-compass-tick" />
+            <line x1="5"  y1="50" x2="12" y2="50" className="geo-compass-tick" />
+            <text x="50" y="20"  textAnchor="middle" className="geo-compass-label">N</text>
+            <text x="84" y="54"  textAnchor="middle" className="geo-compass-label">E</text>
+            <text x="50" y="91"  textAnchor="middle" className="geo-compass-label">S</text>
+            <text x="16" y="54"  textAnchor="middle" className="geo-compass-label">W</text>
+            <g className="geo-needle-group">
+              <line x1="50" y1="50" x2={needleX} y2={needleY} className="geo-compass-needle" />
+              <circle cx="50" cy="50" r="2" className="geo-compass-hub" />
+            </g>
+          </svg>
+          <div className="geo-bearing">N 34° E</div>
+        </div>
+
+        {/* ── Bottom: location card + map panel + CTA ── */}
+        <div className="geo-game-ui">
+          <div className="geo-bottom-row">
+
+            {/* Location info */}
+            <div className="geo-location">
+              <div className="geo-location-head">Eastern Cape</div>
+              <div className="geo-location-sub">South Africa · Coastline</div>
+              <div className="geo-location-meta">WIND 12KN · GOLDEN HOUR 18:42</div>
+            </div>
+
+            {/* Map panel — the game mechanic */}
+            <div className="geo-mapbox">
+              <div className="geo-map-label">PLACE YOUR PIN</div>
+              <svg viewBox="0 0 100 100" className="geo-map-svg">
+                {/* Graticule */}
+                <line x1="0" y1="33" x2="100" y2="33" className="geo-map-grid" />
+                <line x1="0" y1="66" x2="100" y2="66" className="geo-map-grid" />
+                <line x1="33" y1="0" x2="33" y2="100" className="geo-map-grid" />
+                <line x1="66" y1="0" x2="66" y2="100" className="geo-map-grid" />
+                {/* Africa landmass — simplified polygon */}
+                <path className="geo-map-land" d="M40,8 C52,6 68,14 72,30 C76,46 72,60 66,70 C70,80 64,90 54,92 C44,94 34,86 28,76 C22,66 22,52 24,40 C26,28 28,10 40,8 Z" />
+                {/* Southern Africa darker tip */}
+                <path className="geo-map-land-tip" d="M34,76 C36,82 42,92 52,92 C58,92 64,88 66,82 C60,88 52,92 44,90 C36,88 34,82 34,76 Z" />
+                {/* Dashed line pin→target */}
+                <line x1="54" y1="74" x2="40" y2="60" className="geo-map-line" />
+                {/* Target reticle */}
+                <circle cx="40" cy="60" r="4" className="geo-map-target-ring" />
+                <circle cx="40" cy="60" r="1.5" className="geo-map-target-dot" />
+                {/* Guess pin */}
+                <circle cx="54" cy="74" r="5" className="geo-map-pin-glow" />
+                <circle cx="54" cy="74" r="3" className="geo-map-pin" />
+              </svg>
+              <div className="geo-map-dist">62.4 KM FROM TARGET</div>
+            </div>
+
+          </div>
+
+          {/* Full-width game CTA */}
+          <div className="geo-cta">
+            <svg viewBox="0 0 12 12" className="geo-cta-glyph" aria-hidden="true">
+              <circle cx="6" cy="6" r="4"   fill="none" stroke="currentColor" strokeWidth="1" />
+              <circle cx="6" cy="6" r="1.4" fill="currentColor" />
+              <line x1="6" y1="0.5" x2="6" y2="2.2"  stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+              <line x1="6" y1="9.8" x2="6" y2="11.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+              <line x1="0.5" y1="6" x2="2.2" y2="6"  stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+              <line x1="9.8" y1="6" x2="11.5" y2="6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+            </svg>
+            <span>MAKE YOUR GUESS</span>
           </div>
         </div>
 
-        {/* Crosshair */}
-        <div className="awg-crosshair">
-          <span className="awg-ch-h" /><span className="awg-ch-v" />
-          <span className="awg-ch-ring" />
-          <span className="awg-ch-dot" />
-        </div>
-
-        {/* Bearing label */}
-        <div className="awg-bearing">N 34° E · 142m</div>
-
-        {/* Location tag */}
-        <div className="awg-location-tag">Coastline · Eastern Cape</div>
-
-        {/* Minimap */}
-        <div className="awg-minimap">
-          <div className="awg-minimap-label">Map</div>
-          <div className="awg-pin" />
-        </div>
-      </div>
-
-      {/* Result card */}
-      <div className="awg-result-card">
-        <div className="awg-result-header">
-          <span>Guess placed</span>
-          <span className="awg-result-dist">62 km off</span>
-        </div>
-        <div className="awg-result-body">
-          <div className="awg-result-row">
-            <span>Your guess</span>
-            <strong>Port Alfred</strong>
-          </div>
-          <div className="awg-result-row">
-            <span>Actual location</span>
-            <strong>Kenton-on-Sea</strong>
-          </div>
-          <div className="awg-result-row">
-            <span>Points awarded</span>
-            <strong className="awg-pts">+820 pts</strong>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -701,142 +979,169 @@ function GeoQuestPreview() {
 
 function RugbyPreview() {
   return (
-    <div className="aw aw-rugby app-rugby" aria-hidden="true">
-      <div className="aw-chrome">
-        <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">RugbyMate</span>
-        <div className="aw-chrome-right">
-          <span className="aw-badge aw-badge-amber">● Day 1 Live</span>
+    <div className="aw app-rugby" aria-hidden="true">
+      <div className="rug-ticker">
+        <span className="rug-live-dot" />
+        <span className="rug-ticker-text">LIVE · DAY 1 · POOL STAGE · URC</span>
+      </div>
+
+      <div className="rug-hero">
+        <div className="rug-hero-row">
+          <div className="rug-team rug-team-left">
+            <div className="rug-team-name">SHARKS</div>
+            <div className="rug-team-meta">DURBAN · HOME</div>
+          </div>
+          <div className="rug-score">21 — 17</div>
+          <div className="rug-team rug-team-right">
+            <div className="rug-team-name">STORMERS</div>
+            <div className="rug-team-meta">CAPE TOWN · AWAY</div>
+          </div>
+        </div>
+        <div className="rug-hero-meta">HT 14 — 10 · 73' · KINGS PARK · REF J.PEYPER</div>
+      </div>
+
+      <div className="rug-section">
+        <div className="rug-section-rule" />
+        <div className="rug-section-label">UP NEXT</div>
+      </div>
+
+      <div className="rug-upnext">
+        <div className="rug-upnext-row">
+          <span className="rug-upnext-team">BULLS</span>
+          <span className="rug-upnext-vs">VS</span>
+          <span className="rug-upnext-team">LIONS</span>
+          <span className="rug-upnext-time">19:00</span>
+        </div>
+        <div className="rug-upnext-row">
+          <span className="rug-upnext-team">CHEETAHS</span>
+          <span className="rug-upnext-vs">VS</span>
+          <span className="rug-upnext-team">PUMAS</span>
+          <span className="rug-upnext-time">21:15</span>
         </div>
       </div>
 
-      {/* Tournament header — full-width, no sidebar */}
-      <div className="awrug-header">
-        <div className="awrug-header-main">
-          <span className="awrug-title">Saturday · Pool Stage</span>
-          <div className="awrug-stats-row">
-            <span>8 matches</span>
-            <span className="awrug-sep">·</span>
-            <span>2 fields</span>
-            <span className="awrug-sep">·</span>
-            <span>12 teams</span>
-          </div>
-        </div>
-        <div className="awrug-progress">
-          <div className="awrug-progress-fill" style={{ width: "50%" }} />
+      <div className="rug-nav">
+        <span className="rug-nav-item rug-nav-active">MATCHES</span>
+        <span className="rug-nav-item">STANDINGS</span>
+        <span className="rug-nav-item">NEWS</span>
+        <span className="rug-nav-item">TEAMS</span>
+      </div>
+    </div>
+  );
+}
+
+function PerfGauge({ label, value, unit, arcClass, percent, warn }) {
+  // 270° arc, radius 40, center 50,50; full circumference for 270deg arc
+  const r = 40;
+  const circ = 2 * Math.PI * r;
+  const arcLen = (270 / 360) * circ;
+  const filled = arcLen * percent;
+  const startRot = 135; // start at lower-left
+  return (
+    <div className={`perf-gauge${warn ? " perf-gauge-warn" : ""}`}>
+      <div className="perf-gauge-label">{label}</div>
+      <div className="perf-gauge-face">
+        <svg viewBox="0 0 100 100" className="perf-gauge-svg">
+          {/* background arc */}
+          <circle
+            cx="50" cy="50" r={r}
+            className="perf-gauge-bg"
+            strokeDasharray={`${arcLen} ${circ}`}
+            transform={`rotate(${startRot} 50 50)`}
+          />
+          {/* filled arc */}
+          <circle
+            cx="50" cy="50" r={r}
+            className={`perf-gauge-arc ${arcClass}`}
+            strokeDasharray={`${filled} ${circ}`}
+            transform={`rotate(${startRot} 50 50)`}
+          />
+          {/* tick marks every 30deg along the 270 arc */}
+          {Array.from({ length: 10 }).map((_, i) => {
+            const deg = startRot + (i * 30);
+            const rad = (deg * Math.PI) / 180;
+            const x1 = 50 + Math.cos(rad) * 44;
+            const y1 = 50 + Math.sin(rad) * 44;
+            const x2 = 50 + Math.cos(rad) * 48;
+            const y2 = 50 + Math.sin(rad) * 48;
+            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} className="perf-gauge-tick" />;
+          })}
+          {/* needle */}
+          <line
+            x1="50" y1="50"
+            x2={50 + Math.cos(((startRot + percent * 270) * Math.PI) / 180) * 34}
+            y2={50 + Math.sin(((startRot + percent * 270) * Math.PI) / 180) * 34}
+            className="perf-gauge-needle"
+          />
+          <circle cx="50" cy="50" r="2.2" className="perf-gauge-hub" />
+        </svg>
+        <div className="perf-gauge-readout">
+          <span className="perf-gauge-val">{value}</span>
+          <span className="perf-gauge-unit">{unit}</span>
         </div>
       </div>
-
-      {/* Full-width scoreboard rows */}
-      <div className="aw-body awrug-board">
-        <div className="awrug-match awrug-match-live">
-          <div className="awrug-live-stripe" />
-          <div className="awrug-match-inner">
-            <div className="awrug-field">Field A · 09:00</div>
-            <div className="awrug-teams">
-              <span className="awrug-team">Grey</span>
-              <span className="awrug-score awrug-score-live">21 — 17</span>
-              <span className="awrug-team">Framesby</span>
-            </div>
-          </div>
-          <span className="awrug-status awrug-ft">FT</span>
-        </div>
-
-        <div className="awrug-match">
-          <div className="awrug-match-inner">
-            <div className="awrug-field">Field B · 09:40</div>
-            <div className="awrug-teams">
-              <span className="awrug-team">Pearson</span>
-              <span className="awrug-score">— vs —</span>
-              <span className="awrug-team">Hudson Park</span>
-            </div>
-          </div>
-          <span className="awrug-status">KO</span>
-        </div>
-
-        <div className="awrug-match awrug-match-next">
-          <div className="awrug-match-inner">
-            <div className="awrug-field">Field A · 10:20</div>
-            <div className="awrug-teams">
-              <span className="awrug-team">Selborne</span>
-              <span className="awrug-score">— vs —</span>
-              <span className="awrug-team">Dale</span>
-            </div>
-          </div>
-          <span className="awrug-status awrug-next-badge">Next</span>
-        </div>
-
-        <div className="awrug-match">
-          <div className="awrug-match-inner">
-            <div className="awrug-field">Field B · 11:00</div>
-            <div className="awrug-teams">
-              <span className="awrug-team">Graeme</span>
-              <span className="awrug-score">— vs —</span>
-              <span className="awrug-team">Queens</span>
-            </div>
-          </div>
-          <span className="awrug-status">TBD</span>
-        </div>
+      <div className="perf-gauge-trail">
+        <span /><span /><span /><span /><span />
       </div>
+    </div>
+  );
+}
+
+function PerfToggle({ name, on }) {
+  return (
+    <div className={`perf-toggle${on ? " perf-toggle-on" : ""}`}>
+      <span className="perf-toggle-track">
+        <span className="perf-toggle-puck" />
+      </span>
+      <span className="perf-toggle-label">{name}</span>
     </div>
   );
 }
 
 function PerfPreview() {
   return (
-    <div className="aw aw-perf app-perf" aria-hidden="true">
-      <div className="aw-chrome">
-        <div className="aw-dots"><i /><i /><i /></div>
-        <span className="aw-title">GameOpt · Gaming profile</span>
-        <div className="aw-chrome-right">
-          <span className="aw-badge aw-badge-green">● Stable</span>
+    <div className="aw app-perf" aria-hidden="true">
+      <div className="perf-profiles">
+        <div className="perf-profile-group">
+          <div className="perf-profile perf-profile-active">ESPORTS</div>
+          <div className="perf-profile">BALANCED</div>
+          <div className="perf-profile">BATTERY</div>
+        </div>
+        <div className="perf-sys-id">KERNEL 6.8 · PREEMPT_RT · NODE-02</div>
+      </div>
+
+      <div className="perf-gauges">
+        <PerfGauge label="INPUT LATENCY" value="6.8" unit="ms" arcClass="perf-arc-teal" percent={0.32} />
+        <PerfGauge label="AVG FPS" value="214" unit="fps" arcClass="perf-arc-teal" percent={0.72} />
+        <PerfGauge label="1% LOW" value="142" unit="fps" arcClass="perf-arc-warn" percent={0.48} warn />
+      </div>
+
+      <div className="perf-scope">
+        <div className="perf-scope-head">
+          <span>FRAME TIME</span>
+          <span className="perf-scope-annot">SPIKE 21.4 ms @ 14:03</span>
+        </div>
+        <div className="perf-scope-body">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none" className="perf-scope-svg">
+            {/* dashed 16.67ms reference line */}
+            <line x1="0" y1="36" x2="200" y2="36" className="perf-scope-ref" />
+            {/* waveform */}
+            <polyline
+              className="perf-scope-wave"
+              points="0,38 10,36 18,37 26,34 34,38 42,35 50,37 58,33 66,36 74,38 82,35 90,37 98,34 106,8 114,36 122,38 130,35 138,37 146,34 154,36 162,38 170,35 178,37 186,34 194,36 200,38"
+            />
+            {/* spike marker */}
+            <circle cx="106" cy="8" r="2" className="perf-scope-spike" />
+          </svg>
         </div>
       </div>
 
-      {/* Metrics strip — full-width, no sidebar */}
-      <div className="awperf-metrics-strip">
-        <div className="awperf-metric awperf-highlight">
-          <span className="awperf-label">Input latency</span>
-          <span className="awperf-value awperf-green">6.8 ms</span>
-        </div>
-        <div className="awperf-metric-divider" />
-        <div className="awperf-metric">
-          <span className="awperf-label">FPS avg</span>
-          <span className="awperf-value">214</span>
-        </div>
-        <div className="awperf-metric-divider" />
-        <div className="awperf-metric awperf-warn">
-          <span className="awperf-label">1% low</span>
-          <span className="awperf-value awperf-amber">142</span>
-        </div>
-        <div className="awperf-metric-divider" />
-        <div className="awperf-metric">
-          <span className="awperf-label">CPU gov</span>
-          <span className="awperf-value awperf-small">performance</span>
-        </div>
-      </div>
-
-      {/* Hero chart body */}
-      <div className="aw-body awperf-body">
-        <div className="awperf-chart-area">
-          <div className="awperf-chart-label">Frame time (ms)</div>
-          <div className="awperf-bars">
-            {[4.2,3.8,4.6,3.9,4.1,5.2,3.7,4.4,3.6,4.8,3.9,4.2,3.8,4.5,3.7,4.1].map((h,i)=>(
-              <div key={i} className={`awperf-bar${h > 5 ? " awperf-bar-spike" : ""}`} style={{ height: `${h * 13}%` }} />
-            ))}
-          </div>
-        </div>
-
-        <div className="awperf-config-row">
-          <span className="awperf-config-label">Active tweaks</span>
-          <div className="awperf-tags">
-            <span className="awperf-tag">isolcpus=0-3</span>
-            <span className="awperf-tag">rcu_nocbs</span>
-            <span className="awperf-tag">mitigations=off</span>
-            <span className="awperf-tag">threadirq</span>
-            <span className="awperf-tag awperf-tag-accent">PREEMPT_RT</span>
-          </div>
-        </div>
+      <div className="perf-tweaks">
+        <PerfToggle name="isolcpus" on />
+        <PerfToggle name="rcu_nocbs" on />
+        <PerfToggle name="mitigations=off" on />
+        <PerfToggle name="threadirq" on={false} />
+        <PerfToggle name="PREEMPT_RT" on={false} />
       </div>
     </div>
   );
