@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, Fragment } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -56,9 +56,9 @@ const projects = [
   {
     id: "05",
     title: "GeoQuest 3D",
-    role: "Unity geolocation game system",
+    role: "Unity 3D • Game Engineering",
     outcome:
-      "A location-guessing game with explorable 3D scenes, round scoring, and location reveal flow. I built the gameplay loop in Unity and tuned the HUD so each round feels competitive and clear.",
+      "A 3D location-guessing game built around exploration, precision, and competitive reveal. Built in Unity, GeoQuest 3D takes players through a full round loop — explore, lock in a guess, score the result, and reveal the true location. I built the core gameplay flow and shaped the HUD/result presentation to keep every round clear, tense, and satisfying.",
     stack: ["Unity", "C#", "3D Interaction"],
     tone: "cyan",
     preview: "geoquest",
@@ -321,16 +321,28 @@ function ProjectVisual({ project, active }) {
           </>
         )}
         {project.preview === "geoquest" && (
-          <>
-            <div className="pvh-geo-horizon" />
-            <div className="pvh-geo-crosshair">
-              <span /><span /><span />
+          <div className="pvh-geo-cinematic">
+            <div className="pvh-geo-bg-env">
+              <div className="pvh-geo-sun" />
+              <div className="pvh-geo-mountain-silhouette" />
             </div>
-            <div className="pvh-geo-hud">
-              <div className="pvh-geo-pill">Round 4/5</div>
-              <div className="pvh-geo-pill pvh-geo-pill-score">2,450 pts</div>
+            <div className="pvh-geo-scanner" />
+            <div className="pvh-geo-crosshair-large">
+              <div className="pvh-ch-ring-1" />
+              <div className="pvh-ch-ring-2" />
+              <div className="pvh-ch-marks" />
             </div>
-          </>
+            <div className="pvh-geo-data-overlay">
+              <div className="pvh-geo-stat-box">
+                <span className="pvh-label">ELEVATION</span>
+                <span className="pvh-value">1,420M</span>
+              </div>
+              <div className="pvh-geo-stat-box">
+                <span className="pvh-label">VISIBILITY</span>
+                <span className="pvh-value">HIGH</span>
+              </div>
+            </div>
+          </div>
         )}
         {project.preview === "rugby" && (
           <>
@@ -829,149 +841,290 @@ function EduPreview() {
 }
 
 function GeoQuestPreview() {
+  const bearing = 34;
+  const guessPin = { x: 76, y: 136 };
+  const actualTarget = { x: 145, y: 104 };
+  const mapMidpoint = {
+    x: (guessPin.x + actualTarget.x) / 2,
+    y: (guessPin.y + actualTarget.y) / 2,
+  };
   // Compass needle: 34° bearing. SVG 0° = east, so north = -90°.
-  const needleRad = ((34 - 90) * Math.PI) / 180;
+  const needleRad = ((bearing - 90) * Math.PI) / 180;
   const needleX = 50 + Math.cos(needleRad) * 28;
   const needleY = 50 + Math.sin(needleRad) * 28;
 
   return (
     <div className="aw app-geo" aria-hidden="true">
       <div className="geo-scene">
-
-        {/* ── Scene ── */}
+        {/* ── Environment & Backdrop ── */}
         <div className="geo-sky" />
-        <div className="geo-halo" />
+        <div className="geo-horizon-glow" />
+        <div className="geo-haze geo-haze-distant" />
 
-        {/* Far ridge: pale atmospheric haze, gradient fill */}
+        {/* Far Ridge: High Escarpment */}
         <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-far">
           <defs>
             <linearGradient id="grf" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8294B8" stopOpacity="0.45" />
-              <stop offset="100%" stopColor="#1C2240" stopOpacity="0.85" />
+              <stop offset="0%" stopColor="#8294B8" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#1C2240" stopOpacity="0.9" />
             </linearGradient>
           </defs>
-          <path fill="url(#grf)" d="M0,90 C60,78 120,82 180,70 S280,62 340,72 S420,68 400,120 L0,120 Z" />
+          <path fill="url(#grf)" d="M0,90 C60,72 110,88 170,65 S260,55 330,68 S420,62 400,120 L0,120 Z" />
         </svg>
-        <div className="geo-haze geo-haze-a" />
 
-        {/* Mid ridge: purple-slate, gradient fill, prominent peak */}
+        {/* Mid Ridge: Karoo Plateau */}
         <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-mid">
           <defs>
             <linearGradient id="grm" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3A2A5C" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#100D1E" stopOpacity="1" />
+              <stop offset="0%" stopColor="#3A2A5C" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#0B0916" stopOpacity="1" />
             </linearGradient>
           </defs>
-          <path fill="url(#grm)" d="M0,88 C50,70 110,80 150,52 S230,30 280,48 S360,62 400,52 L400,120 L0,120 Z" />
+          <path fill="url(#grm)" d="M0,88 C40,70 100,82 140,50 S220,25 270,45 S350,60 400,50 L400,120 L0,120 Z" />
         </svg>
-        <div className="geo-haze geo-haze-b" />
 
-        {/* Near ridge: near-black silhouette */}
+        {/* Atmospheric Haze */}
+        <div className="geo-haze geo-haze-mid" />
+
+        {/* Near Ridge: Foreground Escarpment */}
         <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="geo-ridge geo-ridge-near">
           <defs>
             <linearGradient id="grn" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#0E0D16" stopOpacity="1" />
-              <stop offset="100%" stopColor="#06060C" stopOpacity="1" />
+              <stop offset="100%" stopColor="#040408" stopOpacity="1" />
             </linearGradient>
           </defs>
-          <path fill="url(#grn)" d="M0,82 C40,78 80,64 130,72 S210,78 260,60 S340,48 400,66 L400,120 L0,120 Z" />
+          <path fill="url(#grn)" d="M0,85 C35,80 75,60 125,70 S200,80 250,58 S330,45 400,62 L400,120 L0,120 Z" />
         </svg>
 
         <div className="geo-ground" />
+        <div className="geo-scan-overlay" />
         <div className="geo-vignette" />
         <div className="geo-grain" />
 
-        {/* ── HUD ── round indicator · timer · score */}
-        <div className="geo-hud">
-          <div className="geo-pill geo-pill-round">
-            <span className="geo-round-label">ROUND 4 OF 5</span>
-            <span className="geo-round-dots">
-              <i className="is-filled" /><i className="is-filled" /><i className="is-filled" /><i className="is-filled" /><i />
-            </span>
-          </div>
-          <div className="geo-pill geo-pill-timer">
-            <span className="geo-timer-val">02:18</span>
-          </div>
-          <div className="geo-pill geo-pill-score">
-            <span className="geo-score-val">12,840</span>
-            <span className="geo-score-pts">PTS</span>
-          </div>
+        {/* ── Central Reticle ── */}
+        <div className="geo-target-reticle">
+          <div className="geo-reticle-ring geo-reticle-ring-outer" />
+          <div className="geo-reticle-ring geo-reticle-ring-inner" />
+          <div className="geo-reticle-cross geo-reticle-cross-h" />
+          <div className="geo-reticle-cross geo-reticle-cross-v" />
         </div>
 
         {/* ── Compass ── */}
         <div className="geo-compass">
           <svg viewBox="0 0 100 100" className="geo-compass-svg">
-            {/* 270° arc, circumference of r=42 ≈ 263.9; 75% = 197.9 */}
-            <circle cx="50" cy="50" r="42" className="geo-compass-arc"
-              strokeDasharray="197.9 65.97" transform="rotate(135 50 50)" />
-            <line x1="50" y1="5"  x2="50" y2="12" className="geo-compass-tick" />
+            <circle cx="50" cy="50" r="45" className="geo-compass-arc" />
+            {[0, 90, 180, 270].map((deg) => (
+              <line
+                key={deg}
+                x1="50"
+                y1="10"
+                x2="50"
+                y2="18"
+                className="geo-compass-tick"
+                transform={`rotate(${deg} 50 50)`}
+              />
+            ))}
+            <text x="50" y="28" className="geo-compass-label" textAnchor="middle">N</text>
+            <g className="geo-needle-group" transform={`rotate(${bearing} 50 50)`}>
+              <line x1="50" y1="50" x2={needleX} y2={needleY} className="geo-compass-needle" />
+              <circle cx="50" cy="50" r="3" className="geo-compass-hub" />
+            </g>
+          </svg>
+          <span className="geo-bearing">{bearing}° NE</span>
+        </div>
+
+        {/* ── Central Reticle & Compass ── */}
+        <div className="geo-target-reticle">
+          <span className="geo-reticle-ring geo-reticle-ring-outer" />
+          <span className="geo-reticle-ring geo-reticle-ring-inner" />
+          <span className="geo-reticle-cross geo-reticle-cross-h" />
+          <span className="geo-reticle-cross geo-reticle-cross-v" />
+        </div>
+
+        <div className="geo-compass">
+          <svg viewBox="0 0 100 100" className="geo-compass-svg">
+            <circle cx="50" cy="50" r="42" className="geo-compass-arc" strokeDasharray="197.9 65.97" transform="rotate(135 50 50)" />
+            <line x1="50" y1="5" x2="50" y2="12" className="geo-compass-tick" />
             <line x1="95" y1="50" x2="88" y2="50" className="geo-compass-tick" />
             <line x1="50" y1="95" x2="50" y2="88" className="geo-compass-tick" />
-            <line x1="5"  y1="50" x2="12" y2="50" className="geo-compass-tick" />
-            <text x="50" y="20"  textAnchor="middle" className="geo-compass-label">N</text>
-            <text x="84" y="54"  textAnchor="middle" className="geo-compass-label">E</text>
-            <text x="50" y="91"  textAnchor="middle" className="geo-compass-label">S</text>
-            <text x="16" y="54"  textAnchor="middle" className="geo-compass-label">W</text>
+            <line x1="5" y1="50" x2="12" y2="50" className="geo-compass-tick" />
+            <text x="50" y="20" textAnchor="middle" className="geo-compass-label">N</text>
+            <text x="84" y="54" textAnchor="middle" className="geo-compass-label">E</text>
+            <text x="50" y="91" textAnchor="middle" className="geo-compass-label">S</text>
+            <text x="16" y="54" textAnchor="middle" className="geo-compass-label">W</text>
             <g className="geo-needle-group">
               <line x1="50" y1="50" x2={needleX} y2={needleY} className="geo-compass-needle" />
               <circle cx="50" cy="50" r="2" className="geo-compass-hub" />
             </g>
           </svg>
-          <div className="geo-bearing">N 34° E</div>
+          <div className="geo-bearing">Bearing {bearing}° NE</div>
         </div>
 
-        {/* ── Bottom: location card + map panel + CTA ── */}
+        {/* ── Left Telemetry Console ── */}
+        <div className="geo-side-panel geo-side-panel-left">
+          <div className="geo-side-head">
+            <span className="geo-side-kicker">Terrain Telemetry</span>
+            <span className="geo-side-status">ACTIVE</span>
+          </div>
+          <div className="geo-side-reading">
+            <span className="geo-side-reading-value">842m</span>
+            <span className="geo-side-reading-label">Elevation</span>
+          </div>
+          <div className="geo-side-metrics">
+            <div className="geo-side-metric">
+              <span>Azimuth</span>
+              <strong>284° W</strong>
+            </div>
+            <div className="geo-side-metric">
+              <span>Biome</span>
+              <strong>Scrub</strong>
+            </div>
+            <div className="geo-side-metric">
+              <span>Surface</span>
+              <strong>Red Soil</strong>
+            </div>
+          </div>
+          <div className="geo-side-visual">
+            <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="geo-topo-wave">
+              <path d="M0,20 Q10,15 20,25 T40,20 T60,25 T80,18 T100,22 L100,40 L0,40 Z" fill="rgba(93, 233, 255, 0.1)" stroke="var(--cyan)" strokeWidth="0.5" />
+              <path d="M0,22 Q15,28 30,22 T60,28 T90,22" fill="none" stroke="var(--cyan)" strokeWidth="0.2" opacity="0.4" />
+            </svg>
+            <div className="geo-side-visual-label">Topographic Signal</div>
+          </div>
+        </div>
+
+        {/* ── Right Intel Console ── */}
+        <div className="geo-side-panel geo-side-panel-right">
+          <div className="geo-side-head">
+            <span className="geo-side-kicker">Challenge Protocol</span>
+            <span className="geo-side-status geo-side-status-cyan">RANKED</span>
+          </div>
+          <ul className="geo-side-list">
+            <li>Fixed-position scouting</li>
+            <li>Minimap alignment active</li>
+            <li>No external tools allowed</li>
+          </ul>
+          <div className="geo-intel-footer">
+            <div className="geo-intel-bits">
+              <span /> <span /> <span /> <span />
+            </div>
+            SECURE LINK
+          </div>
+        </div>
+
+        {/* ── Bottom Command Console ── */}
         <div className="geo-game-ui">
           <div className="geo-bottom-row">
-
-            {/* Location info */}
             <div className="geo-location">
-              <div className="geo-location-head">Eastern Cape</div>
-              <div className="geo-location-sub">South Africa · Coastline</div>
-              <div className="geo-location-meta">WIND 12KN · GOLDEN HOUR 18:42</div>
+              <div className="geo-location-topline">
+                <span className="geo-location-tag">Environment Analysis</span>
+                <span className="geo-location-lock">S-ID // 04-ALPHA</span>
+              </div>
+              <div className="geo-location-head">Eastern Cape Highlands</div>
+              <div className="geo-location-sub">Region: South Africa · Sector: Karoo Ridge</div>
+              
+              <div className="geo-location-grid">
+                <div className="geo-grid-cell">
+                  <span className="geo-grid-label">Wind Velocity</span>
+                  <strong className="geo-grid-value">12.4 kn</strong>
+                </div>
+                <div className="geo-grid-cell">
+                  <span className="geo-grid-label">Luminosity</span>
+                  <strong className="geo-grid-value">Dusk / 18:42</strong>
+                </div>
+                <div className="geo-grid-cell">
+                  <span className="geo-grid-label">Horizon Profile</span>
+                  <strong className="geo-grid-value">Layered</strong>
+                </div>
+                <div className="geo-grid-cell">
+                  <span className="geo-grid-label">Vegetation</span>
+                  <strong className="geo-grid-value">Arid Scrub</strong>
+                </div>
+              </div>
             </div>
 
-            {/* Map panel — the game mechanic */}
             <div className="geo-mapbox">
-              <div className="geo-map-label">PLACE YOUR PIN</div>
-              <svg viewBox="0 0 100 100" className="geo-map-svg">
-                {/* Graticule */}
-                <line x1="0" y1="33" x2="100" y2="33" className="geo-map-grid" />
-                <line x1="0" y1="66" x2="100" y2="66" className="geo-map-grid" />
-                <line x1="33" y1="0" x2="33" y2="100" className="geo-map-grid" />
-                <line x1="66" y1="0" x2="66" y2="100" className="geo-map-grid" />
-                {/* Africa landmass — simplified polygon */}
-                <path className="geo-map-land" d="M40,8 C52,6 68,14 72,30 C76,46 72,60 66,70 C70,80 64,90 54,92 C44,94 34,86 28,76 C22,66 22,52 24,40 C26,28 28,10 40,8 Z" />
-                {/* Southern Africa darker tip */}
-                <path className="geo-map-land-tip" d="M34,76 C36,82 42,92 52,92 C58,92 64,88 66,82 C60,88 52,92 44,90 C36,88 34,82 34,76 Z" />
-                {/* Dashed line pin→target */}
-                <line x1="54" y1="74" x2="40" y2="60" className="geo-map-line" />
-                {/* Target reticle */}
-                <circle cx="40" cy="60" r="4" className="geo-map-target-ring" />
-                <circle cx="40" cy="60" r="1.5" className="geo-map-target-dot" />
-                {/* Guess pin */}
-                <circle cx="54" cy="74" r="5" className="geo-map-pin-glow" />
-                <circle cx="54" cy="74" r="3" className="geo-map-pin" />
-              </svg>
-              <div className="geo-map-dist">62.4 KM FROM TARGET</div>
-            </div>
+              <div className="geo-map-frame">
+                <svg viewBox="0 0 200 200" className="geo-map-svg">
+                  <defs>
+                    <linearGradient id="geoMapTerrain" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#0B1320" />
+                      <stop offset="100%" stopColor="#040914" />
+                    </linearGradient>
+                    <filter id="geoMapGuessGlow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="4" />
+                    </filter>
+                    <clipPath id="geoMapClip">
+                      <rect x="0" y="0" width="200" height="200" rx="4" />
+                    </clipPath>
+                  </defs>
+                  <rect x="0" y="0" width="200" height="200" fill="url(#geoMapTerrain)" />
 
+                  <g clipPath="url(#geoMapClip)">
+                    <g className="geo-map-graticule">
+                      {[40, 80, 120, 160].map((v) => (
+                        <Fragment key={v}>
+                          <line x1="0" y1={v} x2="200" y2={v} />
+                          <line x1={v} y1="0" x2={v} y2="200" />
+                        </Fragment>
+                      ))}
+                    </g>
+
+                    <g className="geo-map-contours">
+                      <path className="geo-map-contour-fill" d="M34,-8 Q82,38 164,22 T208,52 L208,-8 Z" />
+                      <path d="M58,-6 Q88,30 154,16 T208,34" />
+                      <path d="M76,-6 Q106,22 144,4 T196,-6" />
+                      <path d="M-10,144 Q34,130 76,154 T208,126" />
+                      <path d="M-10,166 Q28,160 70,180 T208,152" />
+                    </g>
+
+                    <path className="geo-map-road" d="M-10,86 Q40,92 88,74 T152,112 T210,128" />
+                    
+                    <line x1={guessPin.x} y1={guessPin.y} x2={actualTarget.x} y2={actualTarget.y} className="geo-map-line" />
+
+                    <g transform={`translate(${actualTarget.x}, ${actualTarget.y})`}>
+                      <circle cx="0" cy="0" r="14" className="geo-map-target-radar" />
+                      <circle cx="0" cy="0" r="2.5" className="geo-map-target-dot" />
+                    </g>
+
+                    <g transform={`translate(${guessPin.x}, ${guessPin.y})`}>
+                      <circle cx="0" cy="0" r="16" className="geo-map-pin-halo" filter="url(#geoMapGuessGlow)" />
+                      <circle cx="0" cy="0" r="4" className="geo-map-pin-core" />
+                      <path d="M0,-14 L-8,2 L8,2 Z" className="geo-map-pin-pointer" />
+                    </g>
+
+                    <g transform={`translate(${mapMidpoint.x}, ${mapMidpoint.y})`}>
+                      <rect x="-19" y="-6" width="38" height="12" rx="2" className="geo-map-dist-bg" />
+                      <text x="0" y="3" className="geo-map-dist-text">14.2KM</text>
+                    </g>
+                  </g>
+                </svg>
+
+                <div className="geo-map-label-overlay">TACTICAL MINIMAP</div>
+                <div className="geo-map-zoom-pill">4.2x</div>
+              </div>
+              <div className="geo-map-footer">
+                <span>COORD LOCK: 32.1°S / 24.3°E</span>
+              </div>
+            </div>
           </div>
 
-          {/* Full-width game CTA */}
-          <div className="geo-cta">
-            <svg viewBox="0 0 12 12" className="geo-cta-glyph" aria-hidden="true">
-              <circle cx="6" cy="6" r="4"   fill="none" stroke="currentColor" strokeWidth="1" />
-              <circle cx="6" cy="6" r="1.4" fill="currentColor" />
-              <line x1="6" y1="0.5" x2="6" y2="2.2"  stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-              <line x1="6" y1="9.8" x2="6" y2="11.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-              <line x1="0.5" y1="6" x2="2.2" y2="6"  stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-              <line x1="9.8" y1="6" x2="11.5" y2="6" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-            </svg>
-            <span>MAKE YOUR GUESS</span>
+          <div className="geo-action-row">
+            <div className="geo-action-meta">
+              <span className="geo-action-kicker">Deployment Status</span>
+              <span className="geo-action-copy">Marker initialized. Prepare to lock coordinates.</span>
+            </div>
+            <div className="geo-cta">
+              <svg viewBox="0 0 12 12" className="geo-cta-glyph" aria-hidden="true">
+                <path d="M6 1.2 C3.9 1.2 2.2 2.9 2.2 5 c0 2.8 3.8 5.8 3.8 5.8 S9.8 7.8 9.8 5 C9.8 2.9 8.1 1.2 6 1.2Z" fill="none" stroke="currentColor" strokeWidth="1" />
+                <circle cx="6" cy="5" r="1.35" fill="currentColor" />
+              </svg>
+              <span>CONFIRM GUESS</span>
+              <div className="geo-cta-glow" />
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -1499,18 +1652,21 @@ function App() {
       });
 
       gsap.utils.toArray(".scene").forEach((scene) => {
-        gsap.from(scene.querySelectorAll(".reveal-line span, .fade-rise"), {
-          y: 32,
-          autoAlpha: 0,
-          filter: "blur(8px)",
-          duration: 0.72,
-          stagger: 0.08,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: scene,
-            start: "top 66%",
-          },
-        });
+        const elements = scene.querySelectorAll(".reveal-line span, .fade-rise");
+        if (elements.length > 0) {
+          gsap.from(elements, {
+            y: 32,
+            autoAlpha: 0,
+            filter: "blur(8px)",
+            duration: 0.72,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 66%",
+            },
+          });
+        }
       });
 
       gsap.from(".phrase-chip", {
@@ -1573,7 +1729,7 @@ function App() {
         },
       });
 
-      gsap.from(".portrait-crosshair", {
+      gsap.from(".am-pin-cross", {
         scale: 1.6,
         autoAlpha: 0,
         duration: 0.9,
@@ -1581,7 +1737,7 @@ function App() {
         scrollTrigger: { trigger: ".about-scene", start: "top 62%" },
       });
 
-      gsap.from(".portrait-hud", {
+      gsap.from(".am-status-bar, .am-hud-top-left, .am-hud-province", {
         autoAlpha: 0,
         y: 6,
         duration: 0.7,
