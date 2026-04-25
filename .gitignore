@@ -5,3 +5,4 @@ vite-dev*.log
 .env
 .env.*
 !.env.example
+CLAUDE.md
